@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Color Principal: Utilizado generalmente para la barra de herramientas y la barra de estado en versiones antiguas de Android -->
+    <color name="colorPrimary">#666666</color>
+
+    <!-- Color Principal Oscuro: Usualmente utilizado para la barra de estado en versiones más recientes de Android -->
+    <color name="colorPrimaryDark">#666666</color>
+
+    <!-- Color de Acento: Utilizado para elementos interactivos como botones flotantes de acción, checkboxes, y otros -->
+    <color name="colorAccent">#AA666666</color>
+
+    <!-- Colores de Texto -->
+    <color name="colorTextPrimary">#FFFFFF</color>
+    <color name="colorTextSecondary">#FFFFDD</color>
+
+    <!-- Color de Fondo: Para el contenido principal de la UI -->
+    <color name="colorBackground">#FFFFFF</color>
+
+    <!-- Colores para elementos específicos como errores, advertencias, etc. -->
+    <color name="colorError">#B00020</color>
+    <color name="colorWarning">#FFAB00</color>
+
+    <!-- Colores para estados específicos, como activo/inactivo, seleccionado/no seleccionado, etc. -->
+    <color name="colorStateActive">#FF1744</color>
+    <color name="colorStateInactive">#BDBDBD</color>
+
+    <!-- Colores para sombras, bordes, y otros efectos -->
+    <color name="colorShadow">#4D000000</color>
+    <color name="colorBorder">#9E9E9E</color>
+</resources>
