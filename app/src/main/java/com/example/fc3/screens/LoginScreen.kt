@@ -83,7 +83,7 @@ fun LoginScreen(navController: NavController) {
                 )
 
                 Button(
-                    onClick = { navController.navigate(route = AppScreens.FormularioScreen.route) },
+                    onClick = { navController.navigate(route = AppScreens.ScaffoldScreen.route) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp)

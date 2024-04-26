@@ -29,50 +29,30 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import com.example.fc3.navigation.AppScreens
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.fc3.navigation.*
 import com.example.fctc3.R
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun ScaffoldScreen(navController: NavController)
 {
-    Scaffold(
-        content = { paddingValues -> MyContent(modifier = Modifier.padding(paddingValues))
-        },
-        topBar = { ExampleTopAppBar() },
-        bottomBar = {
-            BottomAppBar(
-                //containerColor = com.example.fctc3.ui.theme,
-                //contentColor = Color.White
-            ) {
+    val navHostController = rememberNavController()
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
-                )
-                {
-                    IconButton(onClick = { }) {
-                        Icon(painter = painterResource(id = R.drawable.home), contentDescription = "Empresas")
-                    }
-                    IconButton(onClick = { }) {
-                        Icon(painter = painterResource(id = R.drawable.empresas), contentDescription = "Empresas")
-                    }
-                    IconButton(onClick = { }) {
-                        Icon(painter = painterResource(id = R.drawable.profesores), contentDescription = "Profesores")
-                    }
-                    IconButton(onClick = { }) {
-                        Icon(painter = painterResource(id = R.drawable.alumnos), contentDescription = "Alumnos")
-                    }
-                    IconButton(onClick = { }) {
-                        Icon(painter = painterResource(id = R.drawable.solicitudes), contentDescription = "Solicitudes")
-                    }
-                }
-            }
-        },
+    Scaffold(
+        content = { NavigationGraph(navHostController) },
+        topBar = { ExampleTopAppBar() },
+        bottomBar = { BottomNavigationContent(navHostController) },
         floatingActionButton = {
-            FloatingActionButton(onClick = { })
+            FloatingActionButton(onClick = { navController.navigate(route = AppScreens.FormularioScreen.route)})
             {
                 Icon(
                     imageVector = Icons.Filled.Add,
@@ -83,19 +63,6 @@ fun ScaffoldScreen(navController: NavController)
     )
 }
 
-/*
-{ innerPadding -> Column(
-            modifier = Modifier
-                .padding(innerPadding),
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Text(
-                modifier = Modifier.padding(8.dp).align(Alignment.CenterHorizontally),
-                text = "Pantalla principal para la gestión de la FCT".trimIndent(),
-            )
-        }
-    }
- */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -112,18 +79,67 @@ private fun ExampleTopAppBar() {
             IconButton(onClick = { }) {
                 Icon(painter = painterResource(id = R.drawable.ordenar), contentDescription = "Filtrar")
             }
-            IconButton(onClick = { }) {
+            IconButton(onClick = {  }) {
                 Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "Más")
             }
         }
     )
 }
+
 @Composable
-fun MyContent(modifier: Modifier){
-    Box()
+fun BottomNavigationContent(navController: NavHostController)
+{
+    val items = listOf(NavItem.Empresas, NavItem.Alumnos, NavItem.Profesores, NavItem.Solicitudes)
+
+    NavigationBar{
+
+        val backStackEntry: NavBackStackEntry? by navController.currentBackStackEntryAsState()
+        val currentRoute: String? = backStackEntry?.destination?.route
+
+        items.forEach { item: NavItem ->
+            NavigationBarItem(
+                selected = (currentRoute == item.route),
+                icon = ({ Icon(painter = painterResource(id = item.icon), contentDescription = null) }),
+                label = { Text(text = item.title) },
+                onClick = {
+                    navController.navigate(item.route) {
+                        navController.graph.startDestinationRoute?.let {
+                            popUpTo(it) {
+                                saveState = true
+                            }
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                })
+        }
+    }
+}
+
+
+@Composable
+fun NavigationGraph(navController: NavHostController)
+{
+    NavHost(navController= navController, startDestination = NavItem.Empresas.route)
     {
-        Text(
-            text = "Esto es una prueba"
-        )
+        composable(NavItem.Empresas.route)
+        {
+            EmpresasScreen()
+        }
+
+        composable(NavItem.Profesores.route)
+        {
+            ProfesoresScreen()
+        }
+
+        composable(NavItem.Alumnos.route)
+        {
+            AlumnosScreen()
+        }
+
+        composable(NavItem.Solicitudes.route)
+        {
+            SolicitudesScreen()
+        }
     }
 }
