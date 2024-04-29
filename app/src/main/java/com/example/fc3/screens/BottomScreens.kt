@@ -1,4 +1,4 @@
-package com.example.fc3.navigation
+package com.example.fc3.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

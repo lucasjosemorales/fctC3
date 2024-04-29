@@ -22,7 +22,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -31,7 +30,7 @@ import com.example.fctc3.R
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun FormularioScreen(navController: NavController) {
+fun FormularioEmpresaScreen(navController: NavController) {
     var nombreEmpresa by remember { mutableStateOf("") }
     var cif by remember { mutableStateOf("") }
     var localidad by remember { mutableStateOf("") }
@@ -73,7 +72,7 @@ fun FormularioScreen(navController: NavController) {
         )
 
         Text(
-            text = "FORMULARIO FCT",
+            text = "FORMULARIO\nNUEVA EMPRESA",
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),
@@ -91,14 +90,6 @@ fun FormularioScreen(navController: NavController) {
         {
             item {
                 TextField(
-                    value = nombreEmpresa,
-                    onValueChange = { nombreEmpresa = it },
-                    label = { Text("Nombre de la empresa") },
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                TextField(
                     value = cif,
                     onValueChange = { cif = it },
                     label = { Text("CIF") },
@@ -106,6 +97,16 @@ fun FormularioScreen(navController: NavController) {
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
+
+                TextField(
+                    value = nombreEmpresa,
+                    onValueChange = { nombreEmpresa = it },
+                    label = { Text("Nombre de la empresa") },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
                 TextField(
                     value = localidad,
                     onValueChange = { localidad = it },
@@ -114,6 +115,7 @@ fun FormularioScreen(navController: NavController) {
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
+
                 TextField(
                     value = personaContacto,
                     onValueChange = { personaContacto = it },
@@ -122,6 +124,7 @@ fun FormularioScreen(navController: NavController) {
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
+
                 TextField(
                     value = telefonoContacto,
                     onValueChange = { telefonoContacto = it },
@@ -133,6 +136,7 @@ fun FormularioScreen(navController: NavController) {
                     )
                 )
                 Spacer(modifier = Modifier.height(8.dp))
+                
                 TextField(
                     value = correoElectronico,
                     onValueChange = { correoElectronico = it },
@@ -144,50 +148,6 @@ fun FormularioScreen(navController: NavController) {
                     ),
                     keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() })
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-
-            }
-            item{
-                Text(
-                    "Selecciona las necesidades de alumnado",
-                    style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-                Spacer(Modifier.height(16.dp))
-            }
-            item {
-                ExpandableSection(fpInformatica, "Informática")
-                ExpandableSection(fpAdministracion, "Administración")
-                ExpandableSection(fpComercio, "Comercio")
-            }
-            /*items(fpInformatica)
-            { ciclo ->
-                ListaDeCursosFormulario(ciclo)
-            }*/
-            item{
-                Spacer(modifier = Modifier.height(16.dp))
-                TextField(
-                    value = funciones ,
-                    onValueChange = { funciones = it },
-                    label = { Text("Funciones a realizar") },
-                    maxLines = 4,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-                TextField(
-                    value = horarioLaboral ,
-                    onValueChange = { horarioLaboral = it },
-                    label = { Text("Horario Laboral") },
-                    maxLines = 4,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
-                )
-
                 Spacer(modifier = Modifier.height(16.dp))
 
             }
@@ -225,7 +185,7 @@ fun FormularioScreen(navController: NavController) {
     }
 }
 
-
+/*
 @Composable
 fun ListaDeCursosFormulario(ciclo: String)
 {
@@ -240,8 +200,9 @@ fun ListaDeCursosFormulario(ciclo: String)
         Spacer(modifier = Modifier.width(16.dp))
         Text(ciclo, style = MaterialTheme.typography.bodyLarge)
     }
-}
+}*/
 
+/*
 @Composable
 fun Stepper(
     value: Int,
@@ -276,7 +237,7 @@ fun Stepper(
         Spacer(Modifier.width(16.dp))
 
     }
-}
+}*/
 
 @Composable
 fun RowSwitch(pregunta: String)
@@ -302,6 +263,7 @@ fun RowSwitch(pregunta: String)
     }
 }
 
+/*
 @Composable
 fun ExpandableSection(ciclos:List<String>, fp: String) {
     val (expanded, setExpanded) = remember { mutableStateOf(false) }
@@ -337,6 +299,6 @@ fun ExpandableSection(ciclos:List<String>, fp: String) {
 
         }
     }
-}
+}*/
 
 

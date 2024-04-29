@@ -1,34 +1,13 @@
 package com.example.fc3.screens
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -52,7 +31,7 @@ fun ScaffoldScreen(navController: NavController)
         topBar = { ExampleTopAppBar() },
         bottomBar = { BottomNavigationContent(navHostController) },
         floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate(route = AppScreens.FormularioScreen.route)})
+            FloatingActionButton(onClick = { OnClickFAB(navHostController, navController) })
             {
                 Icon(
                     imageVector = Icons.Filled.Add,
@@ -61,6 +40,23 @@ fun ScaffoldScreen(navController: NavController)
             }
         }
     )
+}
+
+private fun OnClickFAB(navHostController: NavHostController, navController: NavController)
+{
+    val currentDestination = navHostController.currentBackStackEntry?.destination
+    val currentRoute = currentDestination?.route
+
+    if (currentRoute != null)
+    {
+        if (currentRoute == NavItem.Empresas.route) {
+            navController.navigate(route = AppScreens.FormularioEmpresaScreen.route)
+        }
+
+        if (currentRoute == NavItem.Solicitudes.route) {
+            navController.navigate(route = AppScreens.FormularioSolicitudScreen.route)
+        }
+    }
 }
 
 
