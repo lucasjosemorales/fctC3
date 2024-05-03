@@ -1,6 +1,9 @@
 package com.example.fc3.screens
 
+import android.text.Layout
 import android.util.Log
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
@@ -18,6 +21,12 @@ import com.example.fc3.navigation.*
 import com.example.fctc3.R
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.VerticalAlignmentLine
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,26 +68,45 @@ private fun OnClickFAB(navHostController: NavHostController, navController: NavC
     }
 }
 
+@Composable
+private fun textoTopAppBar()
+{
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxSize()
+    )
+    {
+        Text(text = "FCT C3", textAlign = TextAlign.Center)
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ExampleTopAppBar() {
     TopAppBar(
-        title = { Text(text = "FCT C3") },
+        title = { textoTopAppBar() },
         actions = {
-            IconButton(onClick = { }) {
-                Icon(imageVector = Icons.Filled.Search, contentDescription = "Buscar")
+            Row(
+                modifier = Modifier.fillMaxHeight(),
+                verticalAlignment = Alignment.CenterVertically
+            )
+            {
+                IconButton(onClick = { }) {
+                    Icon(imageVector = Icons.Filled.Search, contentDescription = "Buscar")
+                }
+                IconButton(onClick = { }) {
+                    Icon(painter = painterResource(id = R.drawable.filtrar), contentDescription = "Ordenar")
+                }
+                IconButton(onClick = { }) {
+                    Icon(painter = painterResource(id = R.drawable.ordenar), contentDescription = "Filtrar")
+                }
+                /*IconButton(onClick = { }) {
+                    Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "Más")
+                }*/
             }
-            IconButton(onClick = { }) {
-                Icon(painter = painterResource(id = R.drawable.filtrar), contentDescription = "Ordenar")
-            }
-            IconButton(onClick = { }) {
-                Icon(painter = painterResource(id = R.drawable.ordenar), contentDescription = "Filtrar")
-            }
-            IconButton(onClick = {  }) {
-                Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "Más")
-            }
-        }
+        },
+        modifier = Modifier.height(56.dp).fillMaxSize()
     )
 }
 
@@ -116,26 +144,32 @@ fun BottomNavigationContent(navController: NavHostController)
 @Composable
 fun NavigationGraph(navController: NavHostController)
 {
-    NavHost(navController= navController, startDestination = NavItem.Empresas.route)
+    Column()
     {
-        composable(NavItem.Empresas.route)
-        {
-            EmpresasScreen()
-        }
 
-        composable(NavItem.Profesores.route)
-        {
-            ProfesoresScreen()
-        }
+        Spacer(modifier =  Modifier.height(56.dp))
 
-        composable(NavItem.Alumnos.route)
+        NavHost(navController = navController, startDestination = NavItem.Empresas.route)
         {
-            AlumnosScreen()
-        }
+            composable(NavItem.Empresas.route)
+            {
+                EmpresasScreen()
+            }
 
-        composable(NavItem.Solicitudes.route)
-        {
-            SolicitudesScreen()
+            composable(NavItem.Profesores.route)
+            {
+                ProfesoresScreen()
+            }
+
+            composable(NavItem.Alumnos.route)
+            {
+                AlumnosScreen()
+            }
+
+            composable(NavItem.Solicitudes.route)
+            {
+                SolicitudesScreen()
+            }
         }
     }
 }

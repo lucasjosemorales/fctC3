@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -193,26 +194,30 @@ fun Stepper(
     minValue: Int = Int.MIN_VALUE,
     maxValue: Int = Int.MAX_VALUE
 ) {
+
+    var counter by rememberSaveable{ mutableIntStateOf(0) }
+
     Row{
+
         Button(
-            onClick = { if (value > minValue) onValueChange(value - 1) },
+            onClick = { if (counter > 0) counter -=1 },
             enabled = value > minValue,
             shape = RectangleShape,
-            modifier = Modifier.graphicsLayer(scaleX = 0.8f, scaleY = 0.8f)
+            modifier = Modifier.graphicsLayer(scaleX = 0.7f, scaleY = 0.7f)
         ) {
             Text("-")
         }
         Spacer(Modifier.width(4.dp))
         Text(
-            value.toString(),
+            counter.toString(),
             modifier = Modifier.alignByBaseline(),
             fontSize = 24.sp)
         Spacer(Modifier.width(4.dp))
         Button(
-            onClick = { if (value < maxValue) onValueChange(value + 1) },
+            onClick = { counter += 1 },
             enabled = value < maxValue,
             shape = RectangleShape,
-            modifier = Modifier.graphicsLayer(scaleX = 0.8f, scaleY = 0.8f)
+            modifier = Modifier.graphicsLayer(scaleX = 0.7f, scaleY = 0.7f)
         ) {
             Text("+")
         }

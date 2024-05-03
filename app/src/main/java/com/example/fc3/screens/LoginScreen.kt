@@ -74,7 +74,7 @@ fun LoginScreen(navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp)
-                        .clickable { /* Acción al hacer clic aquí */ },
+                        .clickable { navController.navigate(route = AppScreens.ForgotScreen.route) },
                     style = TextStyle(
                         color = Color.Blue,
                         textDecoration = TextDecoration.Underline

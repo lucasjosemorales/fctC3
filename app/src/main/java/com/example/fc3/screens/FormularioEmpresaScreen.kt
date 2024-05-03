@@ -152,9 +152,9 @@ fun FormularioEmpresaScreen(navController: NavController) {
 
             }
             item{
-                RowSwitch("¿Ha tenido alumnos en prácticas previamente?")
-                RowSwitch("¿Tiene intención de contratar al finalizar la FCT?")
-                RowSwitch("¿Le interesaría conocer el programa dual?")
+                RowSwitch("¿Ha tenido alumnos en prácticas previamente?", 1)
+                RowSwitch("¿Tiene intención de contratar al finalizar la FCT?", 2)
+                RowSwitch("¿Le interesaría conocer el programa dual?", 3)
             }
             item{
 
@@ -240,15 +240,26 @@ fun Stepper(
 }*/
 
 @Composable
-fun RowSwitch(pregunta: String)
+fun RowSwitch(pregunta: String, pos:Int)
 {
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
     ){
         Row {
+
+            var checked by remember { mutableStateOf(false) }
+            var practicasAnt by remember { mutableStateOf(false) }
+            var contratar by remember { mutableStateOf(false) }
+            var dual by remember { mutableStateOf(false) }
+
             Switch(
-                checked = false,
-                onCheckedChange = {},
+                checked = checked,
+                onCheckedChange = {
+                    checked = it
+                    if (checked && pos == 1) practicasAnt = true else practicasAnt = false
+                    if (checked && pos == 2) contratar = true else contratar = false
+                    if (checked && pos == 3) dual = true else dual = false
+                },
                 modifier = Modifier.graphicsLayer(scaleX = 0.8f, scaleY = 0.8f)
             )
             Spacer(
