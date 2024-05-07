@@ -1,12 +1,9 @@
 package com.example.fc3.screens
 
-import android.text.Layout
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -22,9 +19,7 @@ import com.example.fctc3.R
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
@@ -62,8 +57,8 @@ private fun OnClickFAB(navHostController: NavHostController, navController: NavC
             navController.navigate(route = AppScreens.FormularioEmpresaScreen.route)
         }
 
-        if (currentRoute == NavItem.Solicitudes.route) {
-            navController.navigate(route = AppScreens.FormularioSolicitudScreen.route)
+        if (currentRoute == NavItem.Profesores.route) {
+            navController.navigate(route = AppScreens.FormularioProfesorScreen.route)
         }
     }
 }
@@ -115,7 +110,10 @@ fun BottomNavigationContent(navController: NavHostController)
 {
     val items = listOf(NavItem.Empresas, NavItem.Alumnos, NavItem.Profesores, NavItem.Solicitudes)
 
-    NavigationBar{
+    NavigationBar(
+        modifier = Modifier.height(72.dp).fillMaxSize()
+    )
+    {
 
         val backStackEntry: NavBackStackEntry? by navController.currentBackStackEntryAsState()
         val currentRoute: String? = backStackEntry?.destination?.route
@@ -153,12 +151,17 @@ fun NavigationGraph(navController: NavHostController)
         {
             composable(NavItem.Empresas.route)
             {
-                EmpresasScreen()
+                EmpresasScreen(navController)
+            }
+
+            composable(AppScreens.EmpresasScreen.route)
+            {
+                EmpresasScreen(navController)
             }
 
             composable(NavItem.Profesores.route)
             {
-                ProfesoresScreen()
+                ProfesoresScreen(navController)
             }
 
             composable(NavItem.Alumnos.route)
@@ -170,6 +173,12 @@ fun NavigationGraph(navController: NavHostController)
             {
                 SolicitudesScreen()
             }
+
+            composable(AppScreens.FormularioSolicitudScreen.route){
+                FormularioSolicitudScreen(navController)
+            }
         }
+
+        Spacer(modifier =  Modifier.height(72.dp))
     }
 }

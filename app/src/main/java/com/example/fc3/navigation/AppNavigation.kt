@@ -5,8 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.fc3.navigation.*
 import com.example.fc3.screens.*
+import com.example.fc3.screens.EmpresasScreen
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -22,14 +22,17 @@ fun AppNavigation()
         composable(route=AppScreens.ScaffoldScreen.route){
             ScaffoldScreen(navController)
         }
+        composable(route=AppScreens.ForgotScreen.route){
+            ForgotScreen(navController)
+        }
         composable(route=AppScreens.FormularioEmpresaScreen.route){
             FormularioEmpresaScreen(navController)
         }
-        composable(route=AppScreens.FormularioSolicitudScreen.route){
-            FormularioSolicitudScreen(navController)
+        composable(route=AppScreens.EmpresasScreen.route){
+            EmpresasScreen(navController)
         }
-        composable(route=AppScreens.ForgotScreen.route){
-            ForgotScreen(navController)
+        composable(route=AppScreens.FormularioProfesorScreen.route){
+            FormularioProfesorScreen(navController)
         }
     }
 

@@ -32,7 +32,7 @@ import com.example.fctc3.R
 @Composable
 fun FormularioEmpresaScreen(navController: NavController) {
     var nombreEmpresa by remember { mutableStateOf("") }
-    var cif by remember { mutableStateOf("") }
+    var nif by remember { mutableStateOf("") }
     var localidad by remember { mutableStateOf("") }
     var personaContacto by remember { mutableStateOf("") }
     var telefonoContacto by remember { mutableStateOf("") }
@@ -90,9 +90,9 @@ fun FormularioEmpresaScreen(navController: NavController) {
         {
             item {
                 TextField(
-                    value = cif,
-                    onValueChange = { cif = it },
-                    label = { Text("CIF") },
+                    value = nif,
+                    onValueChange = { nif = it },
+                    label = { Text("NIF") },
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
                 )
