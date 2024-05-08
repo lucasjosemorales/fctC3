@@ -16,6 +16,7 @@ sealed class AppScreens(val route: String, var title:String,
     object FormularioEmpresaScreen: AppScreens("formulario_empresa_screen", "", 0)
     object FormularioSolicitudScreen: AppScreens("formulario_solicitud_screen", "", 0)
     object FormularioProfesorScreen: AppScreens("formulario_profesor_screen", "", 0)
+    object FormularioAlumnoScreen: AppScreens("formulario_alumno_screen", "", 0)
 
     //BottomScreens
     object AlumnosScreen: AppScreens("alumnos_screen", "Alumnos", R.drawable.alumnos)

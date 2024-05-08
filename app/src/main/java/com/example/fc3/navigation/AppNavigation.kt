@@ -10,6 +10,7 @@ import com.example.fc3.screens.bottom_screens.AlumnosScreen
 import com.example.fc3.screens.bottom_screens.EmpresasScreen
 import com.example.fc3.screens.bottom_screens.ProfesoresScreen
 import com.example.fc3.screens.bottom_screens.SolicitudesScreen
+import com.example.fc3.screens.formularios.FormularioAlumnoScreen
 import com.example.fc3.screens.formularios.FormularioEmpresaScreen
 import com.example.fc3.screens.formularios.FormularioProfesorScreen
 import com.example.fc3.screens.formularios.FormularioSolicitudScreen
@@ -44,10 +45,12 @@ fun AppNavigation()
         composable(route=AppScreens.FormularioProfesorScreen.route){
             FormularioProfesorScreen(navController)
         }
+        composable(route=AppScreens.FormularioAlumnoScreen.route){
+            FormularioAlumnoScreen(navController)
+        }
         composable(route=AppScreens.FormularioSolicitudScreen.route){
             FormularioSolicitudScreen(navController)
         }
-
 
         //BottomScreens
         composable(route=AppScreens.AlumnosScreen.route){

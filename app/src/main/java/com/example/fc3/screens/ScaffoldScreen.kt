@@ -27,6 +27,7 @@ import com.example.fc3.screens.bottom_screens.AlumnosScreen
 import com.example.fc3.screens.bottom_screens.EmpresasScreen
 import com.example.fc3.screens.bottom_screens.ProfesoresScreen
 import com.example.fc3.screens.bottom_screens.SolicitudesScreen
+import com.example.fc3.screens.formularios.FormularioAlumnoScreen
 import com.example.fc3.screens.formularios.FormularioEmpresaScreen
 import com.example.fc3.screens.formularios.FormularioProfesorScreen
 import com.example.fc3.screens.formularios.FormularioSolicitudScreen
@@ -37,17 +38,21 @@ fun ScaffoldScreen(navController: NavHostController)
 {
     val navController = rememberNavController()
 
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val showFloatingActionButton = remember(currentRoute) {
+        currentRoute != AppScreens.SolicitudesScreen.route
+    }
+
     Scaffold(
         content = {innerPadding -> NavigationGraph(navController, innerPadding) },
         topBar = { ExampleTopAppBar() },
         bottomBar = { BottomNavigationContent(navController) },
         floatingActionButton = {
-            FloatingActionButton(onClick = { OnClickFAB(navController) })
-            {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "Añadir"
-                )
+            if (showFloatingActionButton) {
+                FloatingActionButton(onClick = { OnClickFAB(navController) }) {
+                    Icon(Icons.Filled.Add, contentDescription = "Add")
+                }
             }
         }
     )
@@ -67,6 +72,11 @@ private fun OnClickFAB(navController: NavHostController)
         if (currentRoute == AppScreens.ProfesoresScreen.route) {
             navController.navigate(route = AppScreens.FormularioProfesorScreen.route)
         }
+
+        if (currentRoute == AppScreens.AlumnosScreen.route) {
+            navController.navigate(route = AppScreens.FormularioAlumnoScreen.route)
+        }
+
     }
 }
 
@@ -155,16 +165,6 @@ fun NavigationGraph(navController: NavHostController, inner: PaddingValues)
 
         Spacer(modifier =  Modifier.height(56.dp))
 
-       /* when(itemClick)
-        {
-            AppScreens.EmpresasScreen.route -> EmpresasScreen(navController)
-            AppScreens.AlumnosScreen.route -> AlumnosScreen(navController)
-            AppScreens.ProfesoresScreen.route -> ProfesoresScreen(navController)
-            AppScreens.SolicitudesScreen.route -> SolicitudesScreen(navController)
-            else -> EmpresasScreen(navController)
-
-        }*/
-
         NavHost(
             navController = navController,
             startDestination = AppScreens.EmpresasScreen.route
@@ -200,6 +200,9 @@ fun NavigationGraph(navController: NavHostController, inner: PaddingValues)
             }
             composable(route=AppScreens.FormularioSolicitudScreen.route){
                 FormularioSolicitudScreen(navController)
+            }
+            composable(route=AppScreens.FormularioAlumnoScreen.route){
+                FormularioAlumnoScreen(navController)
             }
         }
 
