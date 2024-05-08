@@ -1,4 +1,4 @@
-package com.example.fc3.screens
+package com.example.fc3.screens.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

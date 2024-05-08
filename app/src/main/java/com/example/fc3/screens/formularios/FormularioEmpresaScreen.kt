@@ -1,30 +1,24 @@
-package com.example.fc3.screens
+package com.example.fc3.screens.formularios
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -33,7 +27,7 @@ import com.example.fctc3.R
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun FormularioSolicitudScreen(navController: NavController) {
+fun FormularioEmpresaScreen(navController: NavController) {
     var nombreEmpresa by remember { mutableStateOf("") }
     var nif by remember { mutableStateOf("") }
     var localidad by remember { mutableStateOf("") }
@@ -75,7 +69,7 @@ fun FormularioSolicitudScreen(navController: NavController) {
         )
 
         Text(
-            text = "FORMULARIO NUEVA SOLICITUD FCT",
+            text = "FORMULARIO\nNUEVA EMPRESA",
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),
@@ -92,7 +86,6 @@ fun FormularioSolicitudScreen(navController: NavController) {
         )
         {
             item {
-                //Debe autorellenarse con la información de la empresa
                 TextField(
                     value = nif,
                     onValueChange = { nif = it },
@@ -102,7 +95,6 @@ fun FormularioSolicitudScreen(navController: NavController) {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
-                //Debe autorellenarse con la información de la empresa
                 TextField(
                     value = nombreEmpresa,
                     onValueChange = { nombreEmpresa = it },
@@ -110,48 +102,68 @@ fun FormularioSolicitudScreen(navController: NavController) {
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
                 )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                TextField(
+                    value = localidad,
+                    onValueChange = { localidad = it },
+                    label = { Text("Localidad") },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                TextField(
+                    value = personaContacto,
+                    onValueChange = { personaContacto = it },
+                    label = { Text("Persona de contacto") },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                TextField(
+                    value = telefonoContacto,
+                    onValueChange = { telefonoContacto = it },
+                    label = { Text("Teléfono de contacto") },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    )
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                TextField(
+                    value = correoElectronico,
+                    onValueChange = { correoElectronico = it },
+                    label = { Text("Correo electrónico") },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() })
+                )
                 Spacer(modifier = Modifier.height(16.dp))
 
             }
             item{
-                Text(
-                    "Selecciona las necesidades de alumnado",
-                    style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-                Spacer(Modifier.height(16.dp))
-            }
-            item {
-                ExpandableSection(fpInformatica, "Informática")
-                ExpandableSection(fpAdministracion, "Administración")
-                ExpandableSection(fpComercio, "Comercio")
+                RowSwitch("¿Ha tenido alumnos en prácticas previamente?", 1)
+                RowSwitch("¿Tiene intención de contratar al finalizar la FCT?", 2)
+                RowSwitch("¿Le interesaría conocer el programa dual?", 3)
             }
             item{
+
                 Spacer(modifier = Modifier.height(16.dp))
                 TextField(
-                    value = funciones ,
-                    onValueChange = { funciones = it },
-                    label = { Text("Funciones a realizar") },
+                    value = observaciones ,
+                    onValueChange = { observaciones = it },
+                    label = { Text("Observaciones") },
                     maxLines = 4,
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
                 )
-
-                Spacer(modifier = Modifier.height(16.dp))
-                TextField(
-                    value = horarioLaboral ,
-                    onValueChange = { horarioLaboral = it },
-                    label = { Text("Horario Laboral") },
-                    maxLines = 4,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
             }
             item{
                 Spacer(modifier = Modifier.height(16.dp))
@@ -165,15 +177,12 @@ fun FormularioSolicitudScreen(navController: NavController) {
                     Text("Guardar")
                 }
             }
-            item{
-                Spacer(modifier =  Modifier.height(72.dp))
-            }
 
         }
     }
 }
 
-
+/*
 @Composable
 fun ListaDeCursosFormulario(ciclo: String)
 {
@@ -188,8 +197,9 @@ fun ListaDeCursosFormulario(ciclo: String)
         Spacer(modifier = Modifier.width(16.dp))
         Text(ciclo, style = MaterialTheme.typography.bodyLarge)
     }
-}
+}*/
 
+/*
 @Composable
 fun Stepper(
     value: Int,
@@ -197,30 +207,26 @@ fun Stepper(
     minValue: Int = Int.MIN_VALUE,
     maxValue: Int = Int.MAX_VALUE
 ) {
-
-    var counter by rememberSaveable{ mutableIntStateOf(0) }
-
     Row{
-
         Button(
-            onClick = { if (counter > 0) counter -=1 },
+            onClick = { if (value > minValue) onValueChange(value - 1) },
             enabled = value > minValue,
             shape = RectangleShape,
-            modifier = Modifier.graphicsLayer(scaleX = 0.7f, scaleY = 0.7f)
+            modifier = Modifier.graphicsLayer(scaleX = 0.8f, scaleY = 0.8f)
         ) {
             Text("-")
         }
         Spacer(Modifier.width(4.dp))
         Text(
-            counter.toString(),
+            value.toString(),
             modifier = Modifier.alignByBaseline(),
             fontSize = 24.sp)
         Spacer(Modifier.width(4.dp))
         Button(
-            onClick = { counter += 1 },
+            onClick = { if (value < maxValue) onValueChange(value + 1) },
             enabled = value < maxValue,
             shape = RectangleShape,
-            modifier = Modifier.graphicsLayer(scaleX = 0.7f, scaleY = 0.7f)
+            modifier = Modifier.graphicsLayer(scaleX = 0.8f, scaleY = 0.8f)
         ) {
             Text("+")
         }
@@ -228,19 +234,29 @@ fun Stepper(
         Spacer(Modifier.width(16.dp))
 
     }
-}
+}*/
 
-/*
 @Composable
-fun RowSwitch(pregunta: String)
+fun RowSwitch(pregunta: String, pos:Int)
 {
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
     ){
         Row {
+
+            var checked by remember { mutableStateOf(false) }
+            var practicasAnt by remember { mutableStateOf(false) }
+            var contratar by remember { mutableStateOf(false) }
+            var dual by remember { mutableStateOf(false) }
+
             Switch(
-                checked = false,
-                onCheckedChange = {},
+                checked = checked,
+                onCheckedChange = {
+                    checked = it
+                    if (checked && pos == 1) practicasAnt = true else practicasAnt = false
+                    if (checked && pos == 2) contratar = true else contratar = false
+                    if (checked && pos == 3) dual = true else dual = false
+                },
                 modifier = Modifier.graphicsLayer(scaleX = 0.8f, scaleY = 0.8f)
             )
             Spacer(
@@ -253,8 +269,9 @@ fun RowSwitch(pregunta: String)
         }
 
     }
-}*/
+}
 
+/*
 @Composable
 fun ExpandableSection(ciclos:List<String>, fp: String) {
     val (expanded, setExpanded) = remember { mutableStateOf(false) }
@@ -290,6 +307,6 @@ fun ExpandableSection(ciclos:List<String>, fp: String) {
 
         }
     }
-}
+}*/
 
 

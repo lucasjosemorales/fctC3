@@ -9,7 +9,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,20 +21,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
+import com.example.fc3.screens.bottom_screens.AlumnosScreen
+import com.example.fc3.screens.bottom_screens.EmpresasScreen
+import com.example.fc3.screens.bottom_screens.ProfesoresScreen
+import com.example.fc3.screens.bottom_screens.SolicitudesScreen
+import com.example.fc3.screens.formularios.FormularioEmpresaScreen
+import com.example.fc3.screens.formularios.FormularioProfesorScreen
+import com.example.fc3.screens.formularios.FormularioSolicitudScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScaffoldScreen(navController: NavController)
+fun ScaffoldScreen(navController: NavHostController)
 {
-    val navHostController = rememberNavController()
+    val navController = rememberNavController()
 
     Scaffold(
-        content = { NavigationGraph(navHostController) },
+        content = {innerPadding -> NavigationGraph(navController, innerPadding) },
         topBar = { ExampleTopAppBar() },
-        bottomBar = { BottomNavigationContent(navHostController) },
+        bottomBar = { BottomNavigationContent(navController) },
         floatingActionButton = {
-            FloatingActionButton(onClick = { OnClickFAB(navHostController, navController) })
+            FloatingActionButton(onClick = { OnClickFAB(navController) })
             {
                 Icon(
                     imageVector = Icons.Filled.Add,
@@ -46,18 +53,18 @@ fun ScaffoldScreen(navController: NavController)
     )
 }
 
-private fun OnClickFAB(navHostController: NavHostController, navController: NavController)
+private fun OnClickFAB(navController: NavHostController)
 {
-    val currentDestination = navHostController.currentBackStackEntry?.destination
+    val currentDestination = navController.currentBackStackEntry?.destination
     val currentRoute = currentDestination?.route
 
     if (currentRoute != null)
     {
-        if (currentRoute == NavItem.Empresas.route) {
+        if (currentRoute == AppScreens.EmpresasScreen.route) {
             navController.navigate(route = AppScreens.FormularioEmpresaScreen.route)
         }
 
-        if (currentRoute == NavItem.Profesores.route) {
+        if (currentRoute == AppScreens.ProfesoresScreen.route) {
             navController.navigate(route = AppScreens.FormularioProfesorScreen.route)
         }
     }
@@ -108,7 +115,7 @@ private fun ExampleTopAppBar() {
 @Composable
 fun BottomNavigationContent(navController: NavHostController)
 {
-    val items = listOf(NavItem.Empresas, NavItem.Alumnos, NavItem.Profesores, NavItem.Solicitudes)
+    val items = listOf(AppScreens.EmpresasScreen, AppScreens.AlumnosScreen, AppScreens.ProfesoresScreen, AppScreens.SolicitudesScreen)
 
     NavigationBar(
         modifier = Modifier.height(72.dp).fillMaxSize()
@@ -118,17 +125,16 @@ fun BottomNavigationContent(navController: NavHostController)
         val backStackEntry: NavBackStackEntry? by navController.currentBackStackEntryAsState()
         val currentRoute: String? = backStackEntry?.destination?.route
 
-        items.forEach { item: NavItem ->
+        items.forEach { item: AppScreens ->
             NavigationBarItem(
                 selected = (currentRoute == item.route),
                 icon = ({ Icon(painter = painterResource(id = item.icon), contentDescription = null) }),
                 label = { Text(text = item.title) },
                 onClick = {
-                    navController.navigate(item.route) {
-                        navController.graph.startDestinationRoute?.let {
-                            popUpTo(it) {
-                                saveState = true
-                            }
+                    navController.navigate(item.route){
+                        // Aquí puedes agregar lógicas de navegación como limpiar el backstack o evitar múltiples copias
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
                         }
                         launchSingleTop = true
                         restoreState = true
@@ -140,18 +146,34 @@ fun BottomNavigationContent(navController: NavHostController)
 
 
 @Composable
-fun NavigationGraph(navController: NavHostController)
+fun NavigationGraph(navController: NavHostController, inner: PaddingValues)
 {
-    Column()
+    //val navController = rememberNavController()
+
+    Column(modifier = Modifier.padding(inner))
     {
 
         Spacer(modifier =  Modifier.height(56.dp))
 
-        NavHost(navController = navController, startDestination = NavItem.Empresas.route)
+       /* when(itemClick)
         {
-            composable(NavItem.Empresas.route)
+            AppScreens.EmpresasScreen.route -> EmpresasScreen(navController)
+            AppScreens.AlumnosScreen.route -> AlumnosScreen(navController)
+            AppScreens.ProfesoresScreen.route -> ProfesoresScreen(navController)
+            AppScreens.SolicitudesScreen.route -> SolicitudesScreen(navController)
+            else -> EmpresasScreen(navController)
+
+        }*/
+
+        NavHost(
+            navController = navController,
+            startDestination = AppScreens.EmpresasScreen.route
+        )
+        {
+
+            composable(AppScreens.AlumnosScreen.route)
             {
-                EmpresasScreen(navController)
+                AlumnosScreen(navController)
             }
 
             composable(AppScreens.EmpresasScreen.route)
@@ -159,22 +181,24 @@ fun NavigationGraph(navController: NavHostController)
                 EmpresasScreen(navController)
             }
 
-            composable(NavItem.Profesores.route)
+            composable(AppScreens.ProfesoresScreen.route)
             {
                 ProfesoresScreen(navController)
             }
 
-            composable(NavItem.Alumnos.route)
+            composable(AppScreens.SolicitudesScreen.route)
             {
-                AlumnosScreen()
+                SolicitudesScreen(navController)
             }
 
-            composable(NavItem.Solicitudes.route)
-            {
-                SolicitudesScreen()
+            //Formularios
+            composable(route=AppScreens.FormularioEmpresaScreen.route){
+                FormularioEmpresaScreen(navController)
             }
-
-            composable(AppScreens.FormularioSolicitudScreen.route){
+            composable(route=AppScreens.FormularioProfesorScreen.route){
+                FormularioProfesorScreen(navController)
+            }
+            composable(route=AppScreens.FormularioSolicitudScreen.route){
                 FormularioSolicitudScreen(navController)
             }
         }

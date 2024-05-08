@@ -1,4 +1,4 @@
-package com.example.fc3.screens
+package com.example.fc3.screens.login
 
 import android.annotation.SuppressLint
 import android.widget.Toast

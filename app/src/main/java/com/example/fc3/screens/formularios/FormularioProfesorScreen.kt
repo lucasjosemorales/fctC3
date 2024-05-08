@@ -1,29 +1,21 @@
-package com.example.fc3.screens
+package com.example.fc3.screens.formularios
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.fc3.navigation.AppScreens
-import com.example.fct.models.Profesor
 import com.example.fctc3.R
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,7 +56,7 @@ fun FormularioProfesorScreen(navController: NavHostController)
             text = "INGRESA LA INFORMACIÓN DEL PROFESOR",
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             fontWeight = FontWeight.Bold
         )
         OutlinedTextField(
@@ -93,6 +85,8 @@ fun FormularioProfesorScreen(navController: NavHostController)
         //DropdownSample(listaCiclos)
         Demo_ExposedDropdownMenuBox(listaCiclos)
 
+        //MultiLevelExposedDropdownMenuBox()
+
         /*OutlinedTextField(
             value = tutoria,
             onValueChange = setTutoria,
@@ -104,7 +98,7 @@ fun FormularioProfesorScreen(navController: NavHostController)
 
         Button(
             onClick = {
-                      navController.navigate(AppScreens.ScaffoldScreen.route)
+                      navController.navigate(AppScreens.ProfesoresScreen.route)
                 },
             modifier = Modifier.padding(horizontal = 16.dp),
             shape = RoundedCornerShape(4.dp),
@@ -149,6 +143,7 @@ fun Demo_ExposedDropdownMenuBox(lista: List<String>)
                             expanded = false
                         }
                     )
+                    Divider()
                 }
             }
         }
