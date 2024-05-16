@@ -27,7 +27,26 @@ fun FormularioProfesorScreen(navController: NavHostController)
     val (tutoria, setTutoria) = remember { mutableStateOf("") }
     val familia by remember { mutableStateOf("") }
 
-    val listaCiclos = listOf(
+    /** ELIMINAR HARDCODED TEXT !!*/
+
+    /* ASOCIAR DESCRIPCIÓN CON SIGLAS - METER GRUPOS
+
+        "Sistemas Microinformáticos y Redes G.M." --> SMR
+        "Administración de Sistemas Informáticos en Red G.S." --> ASIR
+        "Desarrollo de Aplicaciones Web G.S." --> DAW
+        "Desarrollo de Aplicaciones Multiplataforma G.S. --> DAM
+        "Gestión Administrativa G.M." -->
+        "Administración y Finanzas G.S." -->
+        "Asistencia a la dirección Bilingüe G.S." -->
+        "Actividades Comerciales G.M" -->
+        "Transporte y Logística G.S." -->
+        "Comercio Internacional Bilingüe G.S." -->
+        "Marketing y Publicidad G.S." -->
+
+
+     */
+
+    val listaGrupos = listOf(
         "Sistemas Microinformáticos y Redes G.M.",
         "Administración de Sistemas Informáticos en Red G.S.",
         "Desarrollo de Aplicaciones Web G.S.",
@@ -38,7 +57,7 @@ fun FormularioProfesorScreen(navController: NavHostController)
         "Actividades Comerciales G.M",
         "Transporte y Logística G.S.",
         "Comercio Internacional Bilingüe G.S.",
-        "Marketing y Publicidad G.S.",
+        "Marketing y Publicidad G.S."
     )
 
     Column (
@@ -83,7 +102,7 @@ fun FormularioProfesorScreen(navController: NavHostController)
         Spacer(modifier = Modifier.height(16.dp))
 
         //DropdownSample(listaCiclos)
-        Demo_ExposedDropdownMenuBox(listaCiclos)
+        Demo_ExposedDropdownMenuBox(listaGrupos)
 
         //MultiLevelExposedDropdownMenuBox()
 

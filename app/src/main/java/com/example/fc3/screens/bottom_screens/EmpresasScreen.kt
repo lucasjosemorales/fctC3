@@ -1,6 +1,7 @@
 package com.example.fc3.screens.bottom_screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -98,7 +99,8 @@ fun EmpresaItem(empresa: Empresa, navController: NavHostController)
     Card(
         modifier = Modifier
             .padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 0.dp)
-            .fillMaxWidth())
+            .fillMaxWidth()
+            .clickable { navController.navigate(route = AppScreens.FormularioEmpresaScreen.route) })
     {
         Row(
             modifier = Modifier

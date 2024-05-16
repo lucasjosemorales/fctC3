@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -41,12 +42,17 @@ fun ScaffoldScreen(navController: NavHostController)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val showFloatingActionButton = remember(currentRoute) {
-        currentRoute != AppScreens.SolicitudesScreen.route
+        (currentRoute != AppScreens.SolicitudesScreen.route) &&
+                (currentRoute != AppScreens.FormularioProfesorScreen.route) &&
+                    (currentRoute != AppScreens.FormularioAlumnoScreen.route) &&
+                        (currentRoute != AppScreens.FormularioEmpresaScreen.route) &&
+                            (currentRoute != AppScreens.FormularioSolicitudScreen.route)
+
     }
 
     Scaffold(
         content = {innerPadding -> NavigationGraph(navController, innerPadding) },
-        topBar = { ExampleTopAppBar() },
+        topBar = { ExampleTopAppBar(navController) },
         bottomBar = { BottomNavigationContent(navController) },
         floatingActionButton = {
             if (showFloatingActionButton) {
@@ -54,7 +60,8 @@ fun ScaffoldScreen(navController: NavHostController)
                     Icon(Icons.Filled.Add, contentDescription = "Add")
                 }
             }
-        }
+        },
+
     )
 }
 
@@ -95,8 +102,17 @@ private fun textoTopAppBar()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ExampleTopAppBar() {
-    TopAppBar(
+private fun ExampleTopAppBar(navController: NavHostController) {
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val showNavigationIconButton = remember(currentRoute) {
+        (currentRoute != AppScreens.AlumnosScreen.route) &&
+                (currentRoute != AppScreens.EmpresasScreen.route) &&
+                (currentRoute != AppScreens.ProfesoresScreen.route) &&
+                (currentRoute != AppScreens.SolicitudesScreen.route)}
+
+        TopAppBar(
         title = { textoTopAppBar() },
         actions = {
             Row(
@@ -118,7 +134,15 @@ private fun ExampleTopAppBar() {
                 }*/
             }
         },
-        modifier = Modifier.height(56.dp).fillMaxSize()
+        modifier = Modifier.height(56.dp),
+        navigationIcon = {
+            if (showNavigationIconButton) {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                }
+            }
+
+        }
     )
 }
 
@@ -162,9 +186,6 @@ fun NavigationGraph(navController: NavHostController, inner: PaddingValues)
 
     Column(modifier = Modifier.padding(inner))
     {
-
-        Spacer(modifier =  Modifier.height(56.dp))
-
         NavHost(
             navController = navController,
             startDestination = AppScreens.EmpresasScreen.route
