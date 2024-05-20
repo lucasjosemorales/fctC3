@@ -15,11 +15,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.fc3.navigation.AppScreens
+import com.example.fc3.viewmodels.ProfesorViewModel
+import com.example.fct.models.Profesor
 import com.example.fctc3.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormularioProfesorScreen(navController: NavHostController)
+fun FormularioProfesorScreen(navController: NavHostController, profesor: Profesor?)
 {
     val (name, setName) = remember { mutableStateOf("") }
     val (email, setEmail) = remember { mutableStateOf("") }
@@ -78,40 +80,62 @@ fun FormularioProfesorScreen(navController: NavHostController)
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             fontWeight = FontWeight.Bold
         )
-        OutlinedTextField(
-            value = name,
-            onValueChange = setName,
-            label = { Text("Nombre") },
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-        )
-        OutlinedTextField(
-            value = email,
-            onValueChange = setEmail,
-            label = { Text("Email") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-        )
-        OutlinedTextField(
-            value = phoneNumber,
-            onValueChange = setPhoneNumber,
-            label = { Text("Número de Teléfono") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-        )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        if (profesor != null)
+        {
+            OutlinedTextField(
+                value = profesor.name,
+                onValueChange = setName,
+                label = { Text("Nombre") },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            )
+            OutlinedTextField(
+                value = profesor.email,
+                onValueChange = setEmail,
+                label = { Text("Email") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            )
+            OutlinedTextField(
+                value = profesor.phoneNumber,
+                onValueChange = setPhoneNumber,
+                label = { Text("Número de Teléfono") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            )
 
-        //DropdownSample(listaCiclos)
-        Demo_ExposedDropdownMenuBox(listaGrupos)
+            Spacer(modifier = Modifier.height(16.dp))
 
-        //MultiLevelExposedDropdownMenuBox()
+            //Hay que rescatar la información del grupo del profesor y seleccionarla en la lista
+            Demo_ExposedDropdownMenuBox(listaGrupos)
+        }
+        else
+        {
+            OutlinedTextField(
+                value = name,
+                onValueChange = setName,
+                label = { Text("Nombre") },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            )
+            OutlinedTextField(
+                value = email,
+                onValueChange = setEmail,
+                label = { Text("Email") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            )
+            OutlinedTextField(
+                value = phoneNumber,
+                onValueChange = setPhoneNumber,
+                label = { Text("Número de Teléfono") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            )
 
-        /*OutlinedTextField(
-            value = tutoria,
-            onValueChange = setTutoria,
-            label = { Text("Tutoría") },
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-        )*/
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Demo_ExposedDropdownMenuBox(listaGrupos)
+        }
 
         Spacer(modifier = Modifier.height(4.dp))
 
@@ -147,12 +171,12 @@ fun Demo_ExposedDropdownMenuBox(lista: List<String>)
                 onValueChange = {},
                 readOnly = true,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                modifier = Modifier.menuAnchor().fillMaxWidth()
+                modifier = Modifier.menuAnchor().fillMaxWidth(),
             )
 
             ExposedDropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { expanded = false }
+                onDismissRequest = { expanded = false },
             ) {
                 lista.forEach { item ->
                     DropdownMenuItem(

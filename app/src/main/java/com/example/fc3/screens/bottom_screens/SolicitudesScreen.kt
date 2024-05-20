@@ -15,14 +15,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.fc3.models.Solicitud
 import com.example.fc3.navigation.AppScreens
+import com.example.fctc3.R
 import kotlinx.coroutines.launch
 import java.util.LinkedHashMap
 
@@ -149,7 +150,7 @@ fun SolicitudItem(solicitud: Solicitud, navController: NavHostController)
                     overflow = TextOverflow.Ellipsis
                 )
 
-                solicitud.alumnos.forEach { (ciclo, numero) ->
+                solicitud.plazas.forEach { (ciclo, numero) ->
                     Text(
                         text = "$ciclo:$numero",
                         fontWeight = FontWeight.Medium,
@@ -161,18 +162,34 @@ fun SolicitudItem(solicitud: Solicitud, navController: NavHostController)
 
                 }
 
-            }
-
-            //Spacer(modifier = Modifier.width(32.dp))
+            Spacer(modifier = Modifier.width(32.dp))
 
             Column(
                 modifier = Modifier.weight(1f).fillMaxSize(),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.End,
             ) {
+
                 IconButton(
                     onClick = {
-                        //Dialog preguntando si estás seguro + Borrado de la BBDD + Actualizar vista de la Lista
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.person_add), // Icono de Email
+                        contentDescription = "Mail Icon")
+                }
+
+                IconButton(
+                    onClick = {
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.person_remove), // Icono de Email
+                        contentDescription = "Mail Icon")
+                }
+
+                IconButton(
+                    onClick = {
                     },
                 ) {
                     Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Icon")
@@ -180,6 +197,7 @@ fun SolicitudItem(solicitud: Solicitud, navController: NavHostController)
             }
         }
     }
+}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -232,7 +250,7 @@ fun TabContent1(navController: NavHostController)
         name = "Soluciones Innovadoras S.L.",
         funciones= "Programación App Web",
         horario= "L-V 8-14",
-        alumnos= LinkedHashMap<String, Int>(),
+        plazas= LinkedHashMap<String, Int>(),
         estado = "Nueva"
     )
 
@@ -241,12 +259,12 @@ fun TabContent1(navController: NavHostController)
         name = "Tecnologías Avanzadas S.A.",
         funciones= "Programación App Móvil",
         horario= "L-V 8-15",
-        alumnos=LinkedHashMap<String, Int>(),
+        plazas=LinkedHashMap<String, Int>(),
         estado="Nueva"
     )
 
-    solicitud1.alumnos.put("DAW", 1)
-    solicitud2.alumnos.put("DAM", 2)
+    solicitud1.plazas.put("DAW", 1)
+    solicitud2.plazas.put("DAM", 2)
 
     val solicitudes: List<Solicitud> = listOf(solicitud1, solicitud2)
     LazyColumn {
@@ -267,7 +285,7 @@ fun TabContent2(navController: NavHostController)
         name = "Soluciones Innovadoras S.L.",
         funciones= "Programación App Web",
         horario= "L-V 8-14",
-        alumnos= LinkedHashMap<String, Int>(),
+        plazas= LinkedHashMap<String, Int>(),
         estado = "Asignada"
     )
 
@@ -276,12 +294,12 @@ fun TabContent2(navController: NavHostController)
         name = "Tecnologías Avanzadas S.A.",
         funciones= "Programación App Móvil",
         horario= "L-V 8-15",
-        alumnos=LinkedHashMap<String, Int>(),
+        plazas=LinkedHashMap<String, Int>(),
         estado="Asignada"
     )
 
-    solicitud1.alumnos.put("DAW", 1)
-    solicitud2.alumnos.put("DAM", 2)
+    solicitud1.plazas.put("DAW", 1)
+    solicitud2.plazas.put("DAM", 2)
 
     val solicitudes: List<Solicitud> = listOf(solicitud1, solicitud2)
     LazyColumn {
@@ -301,7 +319,7 @@ fun TabContent3(navController: NavHostController)
         name = "Soluciones Innovadoras S.L.",
         funciones= "Programación App Web",
         horario= "L-V 8-14",
-        alumnos= LinkedHashMap<String, Int>(),
+        plazas= LinkedHashMap<String, Int>(),
         estado = "Completada"
     )
 
@@ -310,12 +328,12 @@ fun TabContent3(navController: NavHostController)
         name = "Tecnologías Avanzadas S.A.",
         funciones= "Programación App Móvil",
         horario= "L-V 8-15",
-        alumnos=LinkedHashMap<String, Int>(),
+        plazas=LinkedHashMap<String, Int>(),
         estado="Completada"
     )
 
-    solicitud1.alumnos.put("DAW", 1)
-    solicitud2.alumnos.put("DAM", 2)
+    solicitud1.plazas.put("DAW", 1)
+    solicitud2.plazas.put("DAM", 2)
 
     val solicitudes: List<Solicitud> = listOf(solicitud1, solicitud2)
     LazyColumn {

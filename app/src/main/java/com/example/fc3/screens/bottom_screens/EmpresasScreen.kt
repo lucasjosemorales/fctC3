@@ -31,13 +31,6 @@ fun EmpresasScreen(navController: NavHostController)
         modifier = Modifier.fillMaxSize().background(Color(0xFF364F59))
     )
     {
-        /*Text(
-            text = "Empresas",
-            style = MaterialTheme.typography.headlineMedium,
-            color = Color.White,
-            modifier = Modifier.align(Alignment.Center),
-            fontSize = 50.sp
-        )*/
 
         val empresa1 = Empresa(
             nif = "A12345678",
@@ -126,14 +119,14 @@ fun EmpresaItem(empresa: Empresa, navController: NavHostController)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = empresa.email,
-                    fontWeight = FontWeight.Thin,
+                    fontWeight = FontWeight.Medium,
                     fontSize = 12.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = empresa.personaContacto,
-                    fontWeight = FontWeight.Thin,
+                    fontWeight = FontWeight.Medium,
                     fontSize = 12.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis)

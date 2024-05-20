@@ -6,8 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Alumno(
-    val name: String = "",
-    val email: String = "",
-    val phoneNumber: String = "",
-    val grupo: String = ""
+    var name: String = "",
+    var email: String = "",
+    var phoneNumber: String = "",
+    var grupo: String = ""
 ): Parcelable

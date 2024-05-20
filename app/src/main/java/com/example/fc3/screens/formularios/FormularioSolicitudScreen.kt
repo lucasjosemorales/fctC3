@@ -226,31 +226,6 @@ fun Stepper(
     }
 }
 
-/*
-@Composable
-fun RowSwitch(pregunta: String)
-{
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-    ){
-        Row {
-            Switch(
-                checked = false,
-                onCheckedChange = {},
-                modifier = Modifier.graphicsLayer(scaleX = 0.8f, scaleY = 0.8f)
-            )
-            Spacer(
-                modifier = Modifier.padding(horizontal = 4.dp)
-            )
-            Text(
-                text=pregunta,
-                fontSize = 18.sp
-            )
-        }
-
-    }
-}*/
-
 @Composable
 fun ExpandableSection(ciclos:List<String>, fp: String) {
     val (expanded, setExpanded) = remember { mutableStateOf(false) }

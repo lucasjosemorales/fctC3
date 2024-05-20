@@ -7,7 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.fct.models.Alumno
 
-class AlumnoViewModel(private val state: SavedStateHandle) : ViewModel() {
-
+class AlumnoViewModel(private val state: SavedStateHandle) : ViewModel()
+{
     var alumno = mutableStateOf<Alumno?>(null)
 }

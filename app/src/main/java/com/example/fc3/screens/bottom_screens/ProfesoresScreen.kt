@@ -30,6 +30,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
 import com.example.fc3.navigation.AppScreens
+import com.example.fc3.viewmodels.ProfesorViewModel
 import com.example.fct.models.Profesor
 import com.example.fctc3.R
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -38,7 +39,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 
 
 @Composable
-fun ProfesoresScreen(navController: NavHostController)
+fun ProfesoresScreen(navController: NavHostController, viewModel: ProfesorViewModel)
 {
 
     Column (
@@ -72,7 +73,7 @@ fun ProfesoresScreen(navController: NavHostController)
         LazyColumn {
             profesores.forEach{ profesor ->
                 item {
-                    ProfesorItem(profesor = profesor, navController)
+                    ProfesorItem(profesor = profesor, navController, viewModel)
                 }
             }
 
@@ -88,7 +89,7 @@ fun ProfesoresScreen(navController: NavHostController)
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun ProfesorItem(profesor: Profesor, navController: NavHostController) {
+fun ProfesorItem(profesor: Profesor, navController: NavHostController, viewModel: ProfesorViewModel) {
     //var showDeleteEmpresaDialog by remember { mutableStateOf(false)}
 
     /*val onDeleteEmpresaConfirmed: () -> Unit = {
@@ -112,7 +113,9 @@ fun ProfesorItem(profesor: Profesor, navController: NavHostController) {
         modifier = Modifier
             .padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 0.dp)
             .fillMaxWidth()
-            .clickable { navController.navigate(route = AppScreens.FormularioProfesorScreen.route) }
+            .clickable {
+                viewModel.profesor.value = profesor
+                navController.navigate(route = AppScreens.FormularioProfesorScreen.route) }
     )
     {
         Row(
@@ -240,114 +243,3 @@ fun ProfesorItem(profesor: Profesor, navController: NavHostController) {
         }
     }
 }
-
-/* - Solución anterior
-@Composable
-fun ProfesorItem(profesor: Profesor, navController: NavHostController)
-{
-    //var showDeleteEmpresaDialog by remember { mutableStateOf(false)}
-
-    /*val onDeleteEmpresaConfirmed: () -> Unit = {
-        realtime.deleteEmpresa(empresa.key ?: "")
-    }*/
-
-    /*
-    if (showDeleteEmpresaDialog) {
-        DeleteEmpresaDialog(
-            onConfirmDelete = {
-                onDeleteEmpresaConfirmed()
-                showDeleteEmpresaDialog = false
-            },
-            onDismiss = {
-                showDeleteEmpresaDialog = false
-            }
-        )
-    }*/
-
-    Card(
-        modifier = Modifier
-            .padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 0.dp)
-            .fillMaxWidth())
-    {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Top,
-        ) {
-            Column(modifier = Modifier.weight(6f)) {
-                Text(
-                    text = profesor.name,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis)
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                )
-                {
-                    Text(
-                        text = profesor.email,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 15.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis)
-
-                    Icon(
-                        painter = painterResource(id = R.drawable.mail), // Icono de chat para representar WhatsApp
-                        contentDescription = "Mail Icon",
-                        modifier = Modifier.padding(start = 8.dp) // Espacio entre el texto y el icono
-                    )
-
-                }
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth() // Añade un padding para estética
-                ) {
-                    Text(
-                        text = profesor.phoneNumber,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 15.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.chat), // Icono de chat para representar WhatsApp
-                        contentDescription = "WhatsApp Icon",
-                        modifier = Modifier.padding(start = 8.dp) // Espacio entre el texto y el icono
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.phone), // Icono de chat para representar WhatsApp
-                        contentDescription = "Phone Icon",
-                        modifier = Modifier.padding(start = 8.dp) // Espacio entre el texto y el icono
-                    )
-                }
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = profesor.tutoria,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 15.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis)
-            }
-
-            //Spacer(modifier = Modifier.width(32.dp))
-
-            Column(
-                modifier = Modifier.weight(1f).fillMaxSize(),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.End,
-            ) {
-                IconButton(
-                    onClick = {
-                        //Dialog preguntando si estás seguro + Borrado de la BBDD + Actualizar vista de la Lista
-                    },
-                ) {
-                    Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Icon")
-                }
-            }
-        }
-    }
-}*/

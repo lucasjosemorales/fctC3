@@ -28,7 +28,7 @@ import com.example.fctc3.R
 @Composable
 fun FormularioAlumnoScreen(navController: NavHostController, alumno: Alumno?)
 {
-    val (name, setName) = remember { mutableStateOf("") }
+    var (name, setName) = remember { mutableStateOf("") }
     val (email, setEmail) = remember { mutableStateOf("") }
     val (phoneNumber, setPhoneNumber) = remember { mutableStateOf("") }
     val (grupo, setGrupo) = remember { mutableStateOf("") }
@@ -52,10 +52,11 @@ fun FormularioAlumnoScreen(navController: NavHostController, alumno: Alumno?)
             fontWeight = FontWeight.Bold
         )
 
-        if (alumno != null) {
+        if (alumno != null)
+        {
             OutlinedTextField(
-                value = alumno.name,
-                onValueChange = setEmail,
+                value = name,
+                onValueChange = setName,
                 label = { Text("Nombre") },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
             )
@@ -93,7 +94,7 @@ fun FormularioAlumnoScreen(navController: NavHostController, alumno: Alumno?)
         {
             OutlinedTextField(
                 value = name,
-                onValueChange = setEmail,
+                onValueChange = setName,
                 label = { Text("Nombre") },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
             )

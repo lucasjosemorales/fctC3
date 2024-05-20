@@ -1,32 +1,27 @@
 package com.example.fc3.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.fc3.navigation.*
-import com.example.fctc3.R
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavType
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import com.example.fc3.navigation.*
 import com.example.fc3.screens.bottom_screens.AlumnosScreen
 import com.example.fc3.screens.bottom_screens.EmpresasScreen
 import com.example.fc3.screens.bottom_screens.ProfesoresScreen
@@ -35,13 +30,14 @@ import com.example.fc3.screens.formularios.FormularioAlumnoScreen
 import com.example.fc3.screens.formularios.FormularioEmpresaScreen
 import com.example.fc3.screens.formularios.FormularioProfesorScreen
 import com.example.fc3.screens.formularios.FormularioSolicitudScreen
+import com.example.fc3.themes.MyAppTheme
 import com.example.fc3.viewmodels.AlumnoViewModel
-import com.example.fc3.viewmodels.AlumnoViewModelFactory
-import com.example.fct.models.Alumno
+import com.example.fc3.viewmodels.ProfesorViewModel
+import com.example.fctc3.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScaffoldScreen(navController: NavHostController, viewModel: AlumnoViewModel)
+fun ScaffoldScreen(navController: NavHostController, viewModel: List<ViewModel>)
 {
     val navController = rememberNavController()
 
@@ -62,9 +58,17 @@ fun ScaffoldScreen(navController: NavHostController, viewModel: AlumnoViewModel)
         bottomBar = { BottomNavigationContent(navController) },
         floatingActionButton = {
             if (showFloatingActionButton) {
-                FloatingActionButton(onClick = { OnClickFAB(navController) }) {
-                    Icon(Icons.Filled.Add, contentDescription = "Add")
-                }
+                FloatingActionButton(onClick = {
+
+                    //Esto habrá que hacerlo con todos los viewModel
+                    val alumnoViewModel: AlumnoViewModel = viewModel[0] as AlumnoViewModel
+                    alumnoViewModel.alumno.value = null
+
+
+                    OnClickFAB(navController) })
+                    {
+                        Icon(Icons.Filled.Add, contentDescription = "Add")
+                    }
             }
         },
 
@@ -147,10 +151,18 @@ private fun ExampleTopAppBar(navController: NavHostController) {
                     Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                 }
             }
-
-        }
+        },
+        colors = appBarColors()
     )
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun appBarColors() = TopAppBarDefaults.smallTopAppBarColors(
+    containerColor = Color.White,
+    titleContentColor = Color(0xFF364F59),  // Texto e íconos
+    actionIconContentColor = Color(0xFF364F59)
+)
 
 @Composable
 fun BottomNavigationContent(navController: NavHostController)
@@ -166,9 +178,10 @@ fun BottomNavigationContent(navController: NavHostController)
         val currentRoute: String? = backStackEntry?.destination?.route
 
         items.forEach { item: AppScreens ->
+            val isSelected = (item.route == currentRoute)
             NavigationBarItem(
                 selected = (currentRoute == item.route),
-                icon = ({ Icon(painter = painterResource(id = item.icon), contentDescription = null) }),
+                icon = ({ Icon(painter = painterResource(if (isSelected) item.selectedIcon else item.icon), contentDescription = null) }),
                 label = { Text(text = item.title) },
                 onClick = {
                     navController.navigate(item.route){
@@ -179,19 +192,43 @@ fun BottomNavigationContent(navController: NavHostController)
                         launchSingleTop = true
                         restoreState = true
                     }
-                })
+                },
+                colors = customNavigationBarItemColors()
+            )
         }
     }
 }
 
+// Función para crear los colores de los ítems
+@Composable
+fun customNavigationBarItemColors(): NavigationBarItemColors {
+
+    // Definir los colores
+    val selectedIconColor = Color(0xFF364F59) // Color seleccionado
+    val unselectedIconColor = Color(0xFF647C87) // Color no seleccionado más claro
+    val selectedTextColor = selectedIconColor // Usar el mismo color para el texto seleccionado
+    val unselectedTextColor = unselectedIconColor // Usar el color no seleccionado para el texto
+
+    return NavigationBarItemDefaults.colors(
+        selectedIconColor = selectedIconColor,
+        unselectedIconColor = unselectedIconColor,
+        selectedTextColor = selectedTextColor,
+        unselectedTextColor = unselectedTextColor
+    )
+}
+
 
 @Composable
-fun NavigationGraph(navController: NavHostController, inner: PaddingValues, viewModel: AlumnoViewModel)
+fun NavigationGraph(navController: NavHostController, inner: PaddingValues, viewModel: List<ViewModel>)
 {
     //val navController = rememberNavController()
 
     Column(modifier = Modifier.padding(inner))
     {
+
+        val alumnoViewModel: AlumnoViewModel = viewModel[0] as AlumnoViewModel
+        val profesorViewModel: ProfesorViewModel = viewModel[1] as ProfesorViewModel
+
         NavHost(
             navController = navController,
             startDestination = AppScreens.EmpresasScreen.route
@@ -200,7 +237,8 @@ fun NavigationGraph(navController: NavHostController, inner: PaddingValues, view
 
             composable(AppScreens.AlumnosScreen.route)
             {
-                AlumnosScreen(navController, viewModel = viewModel)
+
+                AlumnosScreen(navController, viewModel = alumnoViewModel)
             }
 
             composable(AppScreens.EmpresasScreen.route)
@@ -210,7 +248,7 @@ fun NavigationGraph(navController: NavHostController, inner: PaddingValues, view
 
             composable(AppScreens.ProfesoresScreen.route)
             {
-                ProfesoresScreen(navController)
+                ProfesoresScreen(navController, viewModel = profesorViewModel)
             }
 
             composable(AppScreens.SolicitudesScreen.route)
@@ -223,14 +261,14 @@ fun NavigationGraph(navController: NavHostController, inner: PaddingValues, view
                 FormularioEmpresaScreen(navController)
             }
             composable(route=AppScreens.FormularioProfesorScreen.route){
-                FormularioProfesorScreen(navController)
+                FormularioProfesorScreen(navController, profesorViewModel.profesor.value)
             }
             composable(route=AppScreens.FormularioSolicitudScreen.route){
                 FormularioSolicitudScreen(navController)
             }
             composable(route=AppScreens.FormularioAlumnoScreen.route){
 
-                FormularioAlumnoScreen(navController, viewModel.alumno.value)
+                FormularioAlumnoScreen(navController, alumnoViewModel.alumno.value)
             }
 
         }
