@@ -1,5 +1,7 @@
 package com.example.fc3.navigation
 
+import androidx.navigation.NavArgs
+import com.example.fct.models.Alumno
 import com.example.fctc3.R
 
 sealed class AppScreens(val route: String, var title:String,

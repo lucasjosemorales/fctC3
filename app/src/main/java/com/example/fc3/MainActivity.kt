@@ -39,6 +39,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.sp
 import com.example.fc3.navigation.AppNavigation
+import com.example.fc3.themes.MyAppTheme
 import com.example.fc3.ui.theme.FCTC3Theme
 import com.example.fctc3.R
 import org.w3c.dom.Text
@@ -49,7 +50,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AppNavigation()
+            MyAppTheme {
+                AppNavigation()
+            }
         }
     }
 }

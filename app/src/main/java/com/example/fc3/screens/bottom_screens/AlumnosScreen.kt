@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.fc3.navigation.AppScreens
+import com.example.fc3.themes.MyAppTheme
+import com.example.fc3.viewmodels.AlumnoViewModel
 import com.example.fct.models.Alumno
 import com.example.fct.models.Profesor
 import com.example.fctc3.R
@@ -36,11 +38,11 @@ import com.google.accompanist.permissions.rememberPermissionState
 
 
 @Composable
-fun AlumnosScreen(navController: NavHostController)
+fun AlumnosScreen(navController: NavHostController, viewModel: AlumnoViewModel)
 {
 
     Column (
-        modifier = Modifier.fillMaxSize().background(Color.Red)
+        modifier = Modifier.fillMaxSize().background(Color(0xFF364F59))
     )
     {
 
@@ -70,7 +72,7 @@ fun AlumnosScreen(navController: NavHostController)
         LazyColumn {
             alumnos.forEach{ alumno ->
                 item {
-                    AlumnoItem(alumno = alumno, navController)
+                    AlumnoItem(alumno = alumno, navController, viewModel)
                 }
             }
 
@@ -86,7 +88,7 @@ fun AlumnosScreen(navController: NavHostController)
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun AlumnoItem(alumno: Alumno, navController: NavHostController) {
+fun AlumnoItem(alumno: Alumno, navController: NavHostController, viewModel: AlumnoViewModel) {
     //var showDeleteEmpresaDialog by remember { mutableStateOf(false)}
 
     /*val onDeleteEmpresaConfirmed: () -> Unit = {
@@ -110,7 +112,10 @@ fun AlumnoItem(alumno: Alumno, navController: NavHostController) {
         modifier = Modifier
             .padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 0.dp)
             .fillMaxWidth()
-            .clickable { navController.navigate(route = AppScreens.FormularioAlumnoScreen.route) }
+            .clickable {
+                viewModel.alumno.value = alumno
+                navController.navigate(route = AppScreens.FormularioAlumnoScreen.route)
+            }
     )
     {
         Row(

@@ -28,7 +28,7 @@ import com.example.fc3.navigation.AppScreens
 fun EmpresasScreen(navController: NavHostController)
 {
     Column(
-        modifier = Modifier.fillMaxSize().background(Color.Cyan)
+        modifier = Modifier.fillMaxSize().background(Color(0xFF364F59))
     )
     {
         /*Text(

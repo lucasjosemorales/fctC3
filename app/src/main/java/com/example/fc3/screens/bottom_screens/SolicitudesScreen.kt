@@ -33,7 +33,7 @@ fun SolicitudesScreen(navController: NavHostController)
 {
 
     Column (
-        modifier = Modifier.fillMaxSize().background(Color.Red)
+        modifier = Modifier.fillMaxSize().background(Color(0xFF364F59))
     )
     {
 

@@ -22,8 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.fc3.screens.bottom_screens.AlumnosScreen
 import com.example.fc3.screens.bottom_screens.EmpresasScreen
 import com.example.fc3.screens.bottom_screens.ProfesoresScreen
@@ -32,10 +35,13 @@ import com.example.fc3.screens.formularios.FormularioAlumnoScreen
 import com.example.fc3.screens.formularios.FormularioEmpresaScreen
 import com.example.fc3.screens.formularios.FormularioProfesorScreen
 import com.example.fc3.screens.formularios.FormularioSolicitudScreen
+import com.example.fc3.viewmodels.AlumnoViewModel
+import com.example.fc3.viewmodels.AlumnoViewModelFactory
+import com.example.fct.models.Alumno
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScaffoldScreen(navController: NavHostController)
+fun ScaffoldScreen(navController: NavHostController, viewModel: AlumnoViewModel)
 {
     val navController = rememberNavController()
 
@@ -51,7 +57,7 @@ fun ScaffoldScreen(navController: NavHostController)
     }
 
     Scaffold(
-        content = {innerPadding -> NavigationGraph(navController, innerPadding) },
+        content = {innerPadding -> NavigationGraph(navController, innerPadding, viewModel) },
         topBar = { ExampleTopAppBar(navController) },
         bottomBar = { BottomNavigationContent(navController) },
         floatingActionButton = {
@@ -180,7 +186,7 @@ fun BottomNavigationContent(navController: NavHostController)
 
 
 @Composable
-fun NavigationGraph(navController: NavHostController, inner: PaddingValues)
+fun NavigationGraph(navController: NavHostController, inner: PaddingValues, viewModel: AlumnoViewModel)
 {
     //val navController = rememberNavController()
 
@@ -194,7 +200,7 @@ fun NavigationGraph(navController: NavHostController, inner: PaddingValues)
 
             composable(AppScreens.AlumnosScreen.route)
             {
-                AlumnosScreen(navController)
+                AlumnosScreen(navController, viewModel = viewModel)
             }
 
             composable(AppScreens.EmpresasScreen.route)
@@ -223,8 +229,10 @@ fun NavigationGraph(navController: NavHostController, inner: PaddingValues)
                 FormularioSolicitudScreen(navController)
             }
             composable(route=AppScreens.FormularioAlumnoScreen.route){
-                FormularioAlumnoScreen(navController)
+
+                FormularioAlumnoScreen(navController, viewModel.alumno.value)
             }
+
         }
 
         Spacer(modifier =  Modifier.height(72.dp))
