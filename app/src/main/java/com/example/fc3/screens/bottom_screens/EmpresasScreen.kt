@@ -8,10 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.List
-import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,7 +25,7 @@ import com.example.fc3.navigation.AppScreens
 fun EmpresasScreen(navController: NavHostController)
 {
     Column(
-        modifier = Modifier.fillMaxSize().background(Color(0xFF364F59))
+        modifier = Modifier.fillMaxSize()
     )
     {
 
@@ -90,6 +87,12 @@ fun EmpresaItem(empresa: Empresa, navController: NavHostController)
     }*/
 
     Card(
+        colors = CardDefaults.cardColors(
+            contentColor = Color.White,
+            containerColor = Color(0xFF364F59),
+            disabledContentColor = Color(0xFF364F59) ,
+            disabledContainerColor = Color.White
+        ),
         modifier = Modifier
             .padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 0.dp)
             .fillMaxWidth()
@@ -100,7 +103,7 @@ fun EmpresaItem(empresa: Empresa, navController: NavHostController)
                 .fillMaxSize()
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(6f)) {
                 Text(
@@ -110,7 +113,7 @@ fun EmpresaItem(empresa: Empresa, navController: NavHostController)
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(
+               /* Text(
                     text = empresa.tfnoContacto,
                     fontWeight = FontWeight.Medium,
                     fontSize = 15.sp,
@@ -123,11 +126,11 @@ fun EmpresaItem(empresa: Empresa, navController: NavHostController)
                     fontSize = 12.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis)
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(4.dp))*/
                 Text(
                     text = empresa.personaContacto,
                     fontWeight = FontWeight.Medium,
-                    fontSize = 12.sp,
+                    fontSize = 15.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis)
             }

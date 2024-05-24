@@ -1,6 +1,8 @@
 package com.example.fc3.screens
 
+import android.app.Activity
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
@@ -10,9 +12,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -30,15 +35,27 @@ import com.example.fc3.screens.formularios.FormularioAlumnoScreen
 import com.example.fc3.screens.formularios.FormularioEmpresaScreen
 import com.example.fc3.screens.formularios.FormularioProfesorScreen
 import com.example.fc3.screens.formularios.FormularioSolicitudScreen
-import com.example.fc3.themes.MyAppTheme
 import com.example.fc3.viewmodels.AlumnoViewModel
 import com.example.fc3.viewmodels.ProfesorViewModel
 import com.example.fctc3.R
+
+@Composable
+fun SetStatusBarColor() {
+    val context = LocalContext.current
+    val activity = context as? Activity
+    activity?.window?.let { window ->
+        WindowCompat.getInsetsController(window, window.decorView)?.isAppearanceLightStatusBars = true
+        //window.statusBarColor = android.graphics.Color.parseColor("#364F59")
+        window.statusBarColor = android.graphics.Color.WHITE;
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScaffoldScreen(navController: NavHostController, viewModel: List<ViewModel>)
 {
+
+    //var showDialog by remember { mutableStateOf(false) }
     val navController = rememberNavController()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -49,31 +66,90 @@ fun ScaffoldScreen(navController: NavHostController, viewModel: List<ViewModel>)
                     (currentRoute != AppScreens.FormularioAlumnoScreen.route) &&
                         (currentRoute != AppScreens.FormularioEmpresaScreen.route) &&
                             (currentRoute != AppScreens.FormularioSolicitudScreen.route)
-
     }
 
+    val showNavigationContent = remember(currentRoute) {
+        (currentRoute != AppScreens.FormularioProfesorScreen.route) &&
+                (currentRoute != AppScreens.FormularioAlumnoScreen.route) &&
+                (currentRoute != AppScreens.FormularioEmpresaScreen.route) &&
+                (currentRoute != AppScreens.FormularioSolicitudScreen.route)
+    }
+
+    val showTopAppBar = remember(currentRoute)
+    {
+        (currentRoute == AppScreens.FormularioProfesorScreen.route) ||
+                (currentRoute == AppScreens.FormularioAlumnoScreen.route) ||
+                (currentRoute == AppScreens.FormularioEmpresaScreen.route) ||
+                (currentRoute == AppScreens.FormularioSolicitudScreen.route)
+    }
+
+
+   /* if (showDialog)
+        mostrarAlertDialog(navController, onDismiss = { showDialog = false })*/
+
+    SetStatusBarColor()
+
     Scaffold(
-        content = {innerPadding -> NavigationGraph(navController, innerPadding, viewModel) },
-        topBar = { ExampleTopAppBar(navController) },
-        bottomBar = { BottomNavigationContent(navController) },
+        content = { innerPadding -> NavigationGraph(navController, innerPadding, viewModel) },
+        topBar = {
+                 if (showTopAppBar)
+                    ExampleTopAppBar(navController)
+                 },
+        bottomBar = {
+                        if (showNavigationContent)
+                            BottomNavigationContent(navController)
+                    },
         floatingActionButton = {
+
             if (showFloatingActionButton) {
-                FloatingActionButton(onClick = {
+                FloatingActionButton(
+                    contentColor = Color(0xFF364F59),
+                    containerColor = Color(0xFF647C87),
+                    onClick = {
 
-                    //Esto habrá que hacerlo con todos los viewModel
-                    val alumnoViewModel: AlumnoViewModel = viewModel[0] as AlumnoViewModel
-                    alumnoViewModel.alumno.value = null
+                        //showDialog = true
 
+                        //Esto habrá que hacerlo con todos los viewModel
+                        val alumnoViewModel: AlumnoViewModel = viewModel[0] as AlumnoViewModel
+                        alumnoViewModel.alumno.value = null
 
-                    OnClickFAB(navController) })
-                    {
-                        Icon(Icons.Filled.Add, contentDescription = "Add")
+                        val profesorViewModel: ProfesorViewModel = viewModel[1] as ProfesorViewModel
+                        profesorViewModel.profesor.value = null
+
+                        OnClickFAB(navController)
                     }
+                )
+                {
+                    Icon(Icons.Filled.Add, contentDescription = "Add")
+                }
             }
         },
 
     )
 }
+
+/*
+@Composable
+fun mostrarAlertDialog(navController: NavHostController, onDismiss: () -> Unit)
+{
+    AlertDialog(
+        onDismissRequest = { onDismiss },
+        title = { },
+        text = { LazyColumn { item{FormularioAlumnoScreen(navController, null)  } } },
+        confirmButton = {
+            Button(
+                onClick = {onDismiss},
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            )
+            {
+                Text("Confirmar")
+            }
+        },
+        modifier = Modifier.fillMaxSize(fraction = 0.9F) // Ocupa el 90% de la pantalla
+            .padding(10.dp), // Añade un poco de padding alrededor del diálogo
+        properties = DialogProperties(usePlatformDefaultWidth = false) // Desactiva el ancho predeterminado del diálogo para permitir la personalización
+    )
+}*/
 
 private fun OnClickFAB(navController: NavHostController)
 {
@@ -82,23 +158,25 @@ private fun OnClickFAB(navController: NavHostController)
 
     if (currentRoute != null)
     {
-        if (currentRoute == AppScreens.EmpresasScreen.route) {
+        if (currentRoute == AppScreens.EmpresasScreen.route)
+        {
             navController.navigate(route = AppScreens.FormularioEmpresaScreen.route)
         }
 
-        if (currentRoute == AppScreens.ProfesoresScreen.route) {
+        if (currentRoute == AppScreens.ProfesoresScreen.route)
+        {
             navController.navigate(route = AppScreens.FormularioProfesorScreen.route)
         }
 
-        if (currentRoute == AppScreens.AlumnosScreen.route) {
+        if (currentRoute == AppScreens.AlumnosScreen.route)
+        {
             navController.navigate(route = AppScreens.FormularioAlumnoScreen.route)
         }
-
     }
 }
 
 @Composable
-private fun textoTopAppBar()
+fun textoTopAppBar()
 {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -122,6 +200,13 @@ private fun ExampleTopAppBar(navController: NavHostController) {
                 (currentRoute != AppScreens.ProfesoresScreen.route) &&
                 (currentRoute != AppScreens.SolicitudesScreen.route)}
 
+    val showActions = remember(currentRoute) {
+        (currentRoute != AppScreens.FormularioProfesorScreen.route) &&
+                (currentRoute != AppScreens.FormularioAlumnoScreen.route) &&
+                (currentRoute != AppScreens.FormularioEmpresaScreen.route) &&
+                (currentRoute != AppScreens.FormularioSolicitudScreen.route)
+    }
+
         TopAppBar(
         title = { textoTopAppBar() },
         actions = {
@@ -130,18 +215,21 @@ private fun ExampleTopAppBar(navController: NavHostController) {
                 verticalAlignment = Alignment.CenterVertically
             )
             {
-                IconButton(onClick = { }) {
-                    Icon(imageVector = Icons.Filled.Search, contentDescription = "Buscar")
+                if (showActions)
+                {
+                    IconButton(onClick = { }) {
+                        Icon(imageVector = Icons.Filled.Search, contentDescription = "Buscar")
+                    }
+                    IconButton(onClick = { }) {
+                        Icon(painter = painterResource(id = R.drawable.filtrar), contentDescription = "Ordenar")
+                    }
+                    /*IconButton(onClick = { }) {
+                        Icon(painter = painterResource(id = R.drawable.ordenar), contentDescription = "Filtrar")
+                    }*/
+                    /*IconButton(onClick = { }) {
+                        Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "Más")
+                    }*/
                 }
-                IconButton(onClick = { }) {
-                    Icon(painter = painterResource(id = R.drawable.filtrar), contentDescription = "Ordenar")
-                }
-                IconButton(onClick = { }) {
-                    Icon(painter = painterResource(id = R.drawable.ordenar), contentDescription = "Filtrar")
-                }
-                /*IconButton(onClick = { }) {
-                    Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "Más")
-                }*/
             }
         },
         modifier = Modifier.height(56.dp),
@@ -213,7 +301,8 @@ fun customNavigationBarItemColors(): NavigationBarItemColors {
         selectedIconColor = selectedIconColor,
         unselectedIconColor = unselectedIconColor,
         selectedTextColor = selectedTextColor,
-        unselectedTextColor = unselectedTextColor
+        unselectedTextColor = unselectedTextColor,
+        indicatorColor = Color(0xFF647C87)
     )
 }
 

@@ -38,7 +38,6 @@ fun AppNavigation()
     val profesorViewModel: ProfesorViewModel = viewModel()
     val listaVM: List<ViewModel> = listOf(alumnoViewModel, profesorViewModel)
 
-
     NavHost(navController=navController, startDestination=AppScreens.LoginScreen.route)
     {
         //Login

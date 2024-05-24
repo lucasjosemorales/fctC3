@@ -1,41 +1,76 @@
 package com.example.fc3.screens.login
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.fc3.navigation.AppScreens
+import com.example.fc3.screens.SetStatusBarColor
+import com.example.fc3.screens.appBarColors
+import com.example.fc3.screens.textoTopAppBar
+import com.example.fctc3.R
 import kotlinx.coroutines.launch
+
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ForgotScreen(navController: NavController){
-
+fun ForgotScreen(navController: NavController)
+{
     val context = LocalContext.current
     var email by remember { mutableStateOf("") }
 
     val scope = rememberCoroutineScope()
 
-    Scaffold(
+    SetStatusBarColor()
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        TopAppBar(
+            title = { },
+            actions = {
+                Row(
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalAlignment = Alignment.CenterVertically
+                )
+                {
+                }
+            },
+            modifier = Modifier.height(56.dp),
+            navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                    }
+            },
+            colors = appBarColors()
+        )
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -44,12 +79,19 @@ fun ForgotScreen(navController: NavController){
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             item {
-                //Titulo de Olvido contraseña
+                Image(
+                    painter = painterResource(id = R.drawable.c3),
+                    contentDescription = "C3 logo",
+                    // Ajusta el tamaño del logo según sea necesario
+                    modifier = Modifier.fillMaxWidth().height(100.dp)
+                )
+
                 Text(
-                    text = "Olvidó su contraseña",
-                    modifier = Modifier.fillMaxWidth(),
-                    fontSize = 24.sp, fontWeight = FontWeight.Bold,
-                    color = Color.DarkGray, textAlign = TextAlign.Center
+                    text = "ESCRIBA SU CORREO ELECTRÓNICO",
+                    style = MaterialTheme.typography.headlineMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    fontWeight = FontWeight.Bold
                 )
 
                 //Espacio
@@ -65,7 +107,7 @@ fun ForgotScreen(navController: NavController){
                     placeholder = { Text("Email") },
                     singleLine = true, maxLines = 1,
                     colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.LightGray
+                        containerColor = Color.White
                     ),
                     visualTransformation = VisualTransformation.None
 
@@ -75,8 +117,18 @@ fun ForgotScreen(navController: NavController){
                 //Espacio
                 Spacer(modifier = Modifier.height(30.dp))
 
+                Button(
+                    onClick = {
+                        navController.navigate(route = AppScreens.ScaffoldScreen.route)
+                    },
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    shape = RoundedCornerShape(4.dp),
+                ) {
+                    Text("Recuperar contraseña")
+                }
+
                 //Botón enviar recuperar contraseña
-                OutlinedButton(
+                /*OutlinedButton(
                     onClick = {
                         navController.navigate(route = AppScreens.ScaffoldScreen.route)
                         /*scope.launch {
@@ -93,13 +145,10 @@ fun ForgotScreen(navController: NavController){
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.LightGray
-                    )
+                        .height(48.dp)
                 ){
                     Text(text = "Recuperar contraseña")
-                }
+                }*/
             }//item
         }//lazzycolumn
     }//Scafold

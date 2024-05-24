@@ -1,18 +1,22 @@
 package com.example.fc3.screens.formularios
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.fc3.navigation.AppScreens
 import com.example.fc3.viewmodels.ProfesorViewModel
@@ -21,13 +25,20 @@ import com.example.fctc3.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormularioProfesorScreen(navController: NavHostController, profesor: Profesor?)
-{
-    val (name, setName) = remember { mutableStateOf("") }
-    val (email, setEmail) = remember { mutableStateOf("") }
-    val (phoneNumber, setPhoneNumber) = remember { mutableStateOf("") }
-    val (tutoria, setTutoria) = remember { mutableStateOf("") }
-    val familia by remember { mutableStateOf("") }
+fun FormularioProfesorScreen(navController: NavHostController, profesor: Profesor?) {
+    val viewModel: ProfesorViewModel = viewModel()
+
+    //val (name, setName) = remember { mutableStateOf("") }
+    //val (email, setEmail) = remember { mutableStateOf("") }
+    //val (phoneNumber, setPhoneNumber) = remember { mutableStateOf("") }
+    //val (tutoria, setTutoria) = remember { mutableStateOf("") }
+    //val familia by remember { mutableStateOf("") }
+
+    val name: String by viewModel.name.observeAsState(initial = profesor?.name ?: "")
+    val email: String by viewModel.email.observeAsState(initial = profesor?.phoneNumber ?: "")
+    val phoneNumber: String by viewModel.phoneNumber.observeAsState(initial = profesor?.email ?: "")
+    //val tutoria: String by viewModel.tutoria.observeAsState(initial = profesor?.tutoria ?: "")
+
 
     /** ELIMINAR HARDCODED TEXT !!*/
 
@@ -62,8 +73,8 @@ fun FormularioProfesorScreen(navController: NavHostController, profesor: Profeso
         "Marketing y Publicidad G.S."
     )
 
-    Column (
-        modifier = Modifier.fillMaxWidth(),
+    Column(
+        modifier = Modifier.fillMaxWidth().background(color = Color.White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
@@ -73,76 +84,67 @@ fun FormularioProfesorScreen(navController: NavHostController, profesor: Profeso
             modifier = Modifier.fillMaxWidth().height(100.dp)
         )
 
-        Text(
-            text = "INGRESA LA INFORMACIÓN DEL PROFESOR",
-            style = MaterialTheme.typography.headlineMedium,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-            fontWeight = FontWeight.Bold
-        )
-
-        if (profesor != null)
+        if (profesor == null)
         {
-            OutlinedTextField(
-                value = profesor.name,
-                onValueChange = setName,
-                label = { Text("Nombre") },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            Text(
+                text = "INGRESA LA INFORMACIÓN DEL PROFESOR",
+                style = MaterialTheme.typography.headlineMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                fontWeight = FontWeight.Bold
             )
-            OutlinedTextField(
-                value = profesor.email,
-                onValueChange = setEmail,
-                label = { Text("Email") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-            )
-            OutlinedTextField(
-                value = profesor.phoneNumber,
-                onValueChange = setPhoneNumber,
-                label = { Text("Número de Teléfono") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            //Hay que rescatar la información del grupo del profesor y seleccionarla en la lista
-            Demo_ExposedDropdownMenuBox(listaGrupos)
         }
         else
         {
-            OutlinedTextField(
-                value = name,
-                onValueChange = setName,
-                label = { Text("Nombre") },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            Text(
+                text = "DETALLE DEL PROFESOR",
+                style = MaterialTheme.typography.headlineMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                fontWeight = FontWeight.Bold
             )
-            OutlinedTextField(
-                value = email,
-                onValueChange = setEmail,
-                label = { Text("Email") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-            )
-            OutlinedTextField(
-                value = phoneNumber,
-                onValueChange = setPhoneNumber,
-                label = { Text("Número de Teléfono") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Demo_ExposedDropdownMenuBox(listaGrupos)
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = name,
+            onValueChange = { viewModel.setName(it) },
+            label = { Text("Nombre") },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+        )
 
         Spacer(modifier = Modifier.height(4.dp))
 
+        OutlinedTextField(
+            value = email,
+            onValueChange = { viewModel.setEmail(it) },
+            label = { Text("Email") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        OutlinedTextField(
+            value = phoneNumber,
+            onValueChange = { viewModel.setPhoneNumber(it) },
+            label = { Text("Número de Teléfono") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        //Demo_ExposedDropdownMenuBox(listaGrupos)
+        Demo_ExposedDropdownMenuBox(listaGrupos, viewModel, profesor?.tutoria)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         Button(
             onClick = {
-                      navController.navigate(AppScreens.ProfesoresScreen.route)
-                },
+                navController.navigate(AppScreens.ProfesoresScreen.route)
+            },
             modifier = Modifier.padding(horizontal = 16.dp),
             shape = RoundedCornerShape(4.dp),
         ) {
@@ -151,39 +153,49 @@ fun FormularioProfesorScreen(navController: NavHostController, profesor: Profeso
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Demo_ExposedDropdownMenuBox(lista: List<String>)
+fun Demo_ExposedDropdownMenuBox(lista: List<String>, viewModel: ProfesorViewModel, tutoria: String?)
 {
-    var expanded by remember { mutableStateOf(false) }
-    var selectedText by remember { mutableStateOf(lista[0]) }
+    //var expanded by remember { mutableStateOf(false) }
+    //var selectedText by remember { mutableStateOf(lista[0]) }
+    val expanded: Boolean by viewModel.expanded.observeAsState(initial = false)
+    val selectedText: String by viewModel.selectedText.observeAsState(initial = tutoria ?: lista[0])  //selectedText seria el equivalente al atributo profesor.tutoria
 
-    Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-    ) {
+    Box(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    )
+    {
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = {
-                expanded = !expanded
+                //expanded = !expanded
+                viewModel.setExpanded(!expanded)
             }
         ) {
-            TextField(
+            OutlinedTextField(
                 value = selectedText,
-                onValueChange = {},
+                onValueChange = { viewModel.setTutoria(it) },
                 readOnly = true,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                modifier = Modifier.menuAnchor().fillMaxWidth(),
+                modifier = Modifier.menuAnchor().fillMaxWidth()
             )
 
             ExposedDropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { expanded = false },
+                //onDismissRequest = { expanded = false },
+                onDismissRequest = { viewModel.setExpanded(false) },
             ) {
                 lista.forEach { item ->
                     DropdownMenuItem(
+                        modifier = Modifier.background(color = Color.White),
                         text = { Text(text = item) },
                         onClick = {
-                            selectedText = item
-                            expanded = false
+                            //selectedText = item
+                            viewModel.setSelectedText(item)
+                            //expanded = false
+                            viewModel.setExpanded(false)
                         }
                     )
                     Divider()

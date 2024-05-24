@@ -1,6 +1,7 @@
 package com.example.fc3.screens.formularios
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
@@ -12,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -58,7 +60,9 @@ fun FormularioEmpresaScreen(navController: NavController) {
         "Marketing y Publicidad G.S.",
     )
 
-    Column()
+    Column(
+        modifier = Modifier.background(color = Color.White)
+    )
     {
 
         Image(
@@ -86,7 +90,7 @@ fun FormularioEmpresaScreen(navController: NavController) {
         )
         {
             item {
-                TextField(
+                OutlinedTextField(
                     value = nif,
                     onValueChange = { nif = it },
                     label = { Text("NIF") },
@@ -95,7 +99,7 @@ fun FormularioEmpresaScreen(navController: NavController) {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
-                TextField(
+                OutlinedTextField(
                     value = nombreEmpresa,
                     onValueChange = { nombreEmpresa = it },
                     label = { Text("Nombre de la empresa") },
@@ -104,7 +108,7 @@ fun FormularioEmpresaScreen(navController: NavController) {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
-                TextField(
+                OutlinedTextField(
                     value = localidad,
                     onValueChange = { localidad = it },
                     label = { Text("Localidad") },
@@ -113,7 +117,7 @@ fun FormularioEmpresaScreen(navController: NavController) {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
-                TextField(
+                OutlinedTextField(
                     value = personaContacto,
                     onValueChange = { personaContacto = it },
                     label = { Text("Persona de contacto") },
@@ -122,7 +126,7 @@ fun FormularioEmpresaScreen(navController: NavController) {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
-                TextField(
+                OutlinedTextField(
                     value = telefonoContacto,
                     onValueChange = { telefonoContacto = it },
                     label = { Text("Teléfono de contacto") },
@@ -133,8 +137,8 @@ fun FormularioEmpresaScreen(navController: NavController) {
                     )
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                
-                TextField(
+
+                OutlinedTextField(
                     value = correoElectronico,
                     onValueChange = { correoElectronico = it },
                     label = { Text("Correo electrónico") },
@@ -156,7 +160,7 @@ fun FormularioEmpresaScreen(navController: NavController) {
             item{
 
                 Spacer(modifier = Modifier.height(16.dp))
-                TextField(
+                OutlinedTextField(
                     value = observaciones ,
                     onValueChange = { observaciones = it },
                     label = { Text("Observaciones") },
@@ -250,6 +254,14 @@ fun RowSwitch(pregunta: String, pos:Int)
             var dual by remember { mutableStateOf(false) }
 
             Switch(
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = Color(0xFF364F59),
+                    checkedTrackColor = Color(0xFF647C87),
+                    uncheckedThumbColor = Color(0xFF364F59),
+                    uncheckedTrackColor = Color.White,
+                    checkedBorderColor = Color(0xFF364F59),
+                    uncheckedBorderColor = Color(0xFF364F59)
+                ),
                 checked = checked,
                 onCheckedChange = {
                     checked = it

@@ -6,5 +6,9 @@ data class Empresa(
     val localidad: String = "",
     val personaContacto: String = "",
     val tfnoContacto: String = "",
-    val email: String = ""
+    val email: String = "",
+    val repetidor: Boolean = false,
+    val contratar: Boolean = false,
+    val dual: Boolean = false,
+    val observaciones: String = ""
 )

@@ -1,6 +1,7 @@
 package com.example.fc3.screens.formularios
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -9,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -16,11 +18,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.example.fc3.navigation.AppScreens
 import com.example.fc3.viewmodels.AlumnoViewModel
-import com.example.fc3.viewmodels.AlumnoViewModelFactory
 import com.example.fct.models.Alumno
 import com.example.fctc3.R
 
@@ -28,13 +27,19 @@ import com.example.fctc3.R
 @Composable
 fun FormularioAlumnoScreen(navController: NavHostController, alumno: Alumno?)
 {
-    var (name, setName) = remember { mutableStateOf("") }
-    val (email, setEmail) = remember { mutableStateOf("") }
-    val (phoneNumber, setPhoneNumber) = remember { mutableStateOf("") }
-    val (grupo, setGrupo) = remember { mutableStateOf("") }
+    val viewModel: AlumnoViewModel = viewModel()
+
+    //var (name, setName) = remember { mutableStateOf("") }
+    //val (email, setEmail) = remember { mutableStateOf("") }
+    //val (phoneNumber, setPhoneNumber) = remember { mutableStateOf("") }
+    //val (grupo, setGrupo) = remember { mutableStateOf("") }
+    val name: String by viewModel.name.observeAsState(initial = alumno?.name ?: "")
+    val phoneNumber: String by viewModel.phoneNumber.observeAsState(initial = alumno?.phoneNumber ?: "")
+    val email: String by viewModel.email.observeAsState(initial = alumno?.email ?: "")
+    val grupo: String by viewModel.grupo.observeAsState(initial = alumno?.grupo ?: "")
 
     Column (
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().background(color = Color.White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
@@ -44,90 +49,73 @@ fun FormularioAlumnoScreen(navController: NavHostController, alumno: Alumno?)
             modifier = Modifier.fillMaxWidth().height(100.dp)
         )
 
-        Text(
-            text = "INGRESA LA INFORMACIÓN DEL ALUMNO",
-            style = MaterialTheme.typography.headlineMedium,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-            fontWeight = FontWeight.Bold
-        )
-
-        if (alumno != null)
+        if (alumno == null)
         {
-            OutlinedTextField(
-                value = name,
-                onValueChange = setName,
-                label = { Text("Nombre") },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            OutlinedTextField(
-                value = alumno.email,
-                onValueChange = setEmail,
-                label = { Text("Email") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            OutlinedTextField(
-                value = alumno.phoneNumber,
-                onValueChange = setPhoneNumber,
-                label = { Text("Número de Teléfono") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            OutlinedTextField(
-                value = alumno.grupo,
-                onValueChange = setGrupo,
-                label = { Text("Grupo") },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            Text(
+                text = "INGRESA LA INFORMACIÓN DEL ALUMNO",
+                style = MaterialTheme.typography.headlineMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                fontWeight = FontWeight.Bold
             )
         }
         else
         {
-            OutlinedTextField(
-                value = name,
-                onValueChange = setName,
-                label = { Text("Nombre") },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            OutlinedTextField(
-                value = email,
-                onValueChange = setEmail,
-                label = { Text("Email") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            OutlinedTextField(
-                value = phoneNumber,
-                onValueChange = setPhoneNumber,
-                label = { Text("Número de Teléfono") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            OutlinedTextField(
-                value = grupo,
-                onValueChange = setGrupo,
-                label = { Text("Grupo") },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            Text(
+                text = "DETALLE DEL ALUMNO",
+                style = MaterialTheme.typography.headlineMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                fontWeight = FontWeight.Bold
             )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            //value = alumno.name,
+            value = name,
+            onValueChange = { viewModel.setName(it) },
+            label = { Text("Nombre") },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)/*,
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                        containerColor = Color(0xFF789BA3),
+                                        textColor = Color.White,
+                                        focusedLabelColor = Color(0xFF364F59),
+                                        unfocusedLabelColor = Color(0xFF789BA3))*/
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        OutlinedTextField(
+            //value = alumno.email,
+            value = email,
+            onValueChange = {viewModel.setEmail(it)},
+            label = { Text("Email") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        OutlinedTextField(
+            //value = alumno.phoneNumber,
+            value = phoneNumber,
+            onValueChange = {viewModel.setPhoneNumber(it)},
+            label = { Text("Número de Teléfono") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        OutlinedTextField(
+            //value = alumno.grupo,
+            value = grupo,
+            onValueChange = {viewModel.setGrupo(it)},
+            label = { Text("Grupo") },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 

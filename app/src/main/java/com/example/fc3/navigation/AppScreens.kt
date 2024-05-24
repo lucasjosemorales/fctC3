@@ -4,8 +4,7 @@ import androidx.navigation.NavArgs
 import com.example.fct.models.Alumno
 import com.example.fctc3.R
 
-sealed class AppScreens(val route: String, var title:String,
-                        var icon: Int, var selectedIcon: Int)
+sealed class AppScreens(val route: String, var title:String, var icon: Int, var selectedIcon: Int)
 {
     //Login
     object LoginScreen: AppScreens("login_screen", "", 0, 0)

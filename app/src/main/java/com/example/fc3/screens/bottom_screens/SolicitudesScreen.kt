@@ -1,7 +1,6 @@
 package com.example.fc3.screens.bottom_screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,11 +9,11 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,7 +33,7 @@ fun SolicitudesScreen(navController: NavHostController)
 {
 
     Column (
-        modifier = Modifier.fillMaxSize().background(Color(0xFF364F59))
+        modifier = Modifier.fillMaxSize()
     )
     {
 
@@ -101,7 +100,16 @@ fun SolicitudItem(solicitud: Solicitud, navController: NavHostController)
         )
     }*/
 
+    var checked by remember { mutableStateOf(false) }
+    var coordinador by remember { mutableStateOf(false) }
+
     Card(
+        colors = CardDefaults.cardColors(
+            contentColor = Color.White,
+            containerColor = Color(0xFF364F59),
+            disabledContentColor = Color(0xFF364F59) ,
+            disabledContainerColor = Color.White
+        ),
         modifier = Modifier
             .padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 0.dp)
             .fillMaxWidth()
@@ -113,18 +121,19 @@ fun SolicitudItem(solicitud: Solicitud, navController: NavHostController)
                 .fillMaxSize()
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Top,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
                 modifier = Modifier.weight(6f)
             )
             {
                 Text(
-                    text = solicitud.name,
+                    text = solicitud.empresa,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis)
+
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
@@ -169,6 +178,26 @@ fun SolicitudItem(solicitud: Solicitud, navController: NavHostController)
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.End,
             ) {
+
+                Switch(
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = Color(0xFF364F59),
+                        checkedTrackColor = Color(0xFF647C87),
+                        uncheckedThumbColor = Color(0xFF364F59),
+                        uncheckedTrackColor = Color.White,
+                        checkedBorderColor = Color(0xFF364F59),
+                        uncheckedBorderColor = Color(0xFF364F59)
+                    ),
+                    checked = checked,
+                    onCheckedChange = {
+                        checked = it
+                        if (checked)
+                            coordinador = true
+                        else
+                            coordinador = false
+                    },
+                    modifier = Modifier.graphicsLayer(scaleX = 0.8f, scaleY = 0.8f)
+                )
 
                 IconButton(
                     onClick = {
@@ -247,20 +276,24 @@ fun TabContent1(navController: NavHostController)
 {
     val solicitud1 = Solicitud(
         nif= "A12345678",
-        name = "Soluciones Innovadoras S.L.",
+        empresa = "Soluciones Innovadoras S.L.",
         funciones= "Programación App Web",
         horario= "L-V 8-14",
         plazas= LinkedHashMap<String, Int>(),
-        estado = "Nueva"
+        estado = "Nueva",
+        coordinador = "juan.perez@escuela.edu",
+        alumnos = null
     )
 
     val solicitud2 = Solicitud(
         nif= "B87654321",
-        name = "Tecnologías Avanzadas S.A.",
+        empresa = "Tecnologías Avanzadas S.A.",
         funciones= "Programación App Móvil",
         horario= "L-V 8-15",
         plazas=LinkedHashMap<String, Int>(),
-        estado="Nueva"
+        estado="Nueva",
+        coordinador = "juan.perez@escuela.edu",
+        alumnos = null
     )
 
     solicitud1.plazas.put("DAW", 1)
@@ -282,20 +315,24 @@ fun TabContent2(navController: NavHostController)
 {
     val solicitud1 = Solicitud(
         nif= "A12345678",
-        name = "Soluciones Innovadoras S.L.",
+        empresa = "Soluciones Innovadoras S.L.",
         funciones= "Programación App Web",
         horario= "L-V 8-14",
         plazas= LinkedHashMap<String, Int>(),
-        estado = "Asignada"
+        estado = "Asignada",
+        coordinador = "juan.perez@escuela.edu",
+        alumnos = null
     )
 
     val solicitud2 = Solicitud(
         nif= "B87654321",
-        name = "Tecnologías Avanzadas S.A.",
+        empresa = "Tecnologías Avanzadas S.A.",
         funciones= "Programación App Móvil",
         horario= "L-V 8-15",
         plazas=LinkedHashMap<String, Int>(),
-        estado="Asignada"
+        estado="Asignada",
+        coordinador = "juan.perez@escuela.edu",
+        alumnos = null
     )
 
     solicitud1.plazas.put("DAW", 1)
@@ -316,20 +353,24 @@ fun TabContent3(navController: NavHostController)
 {
     val solicitud1 = Solicitud(
         nif= "A12345678",
-        name = "Soluciones Innovadoras S.L.",
+        empresa = "Soluciones Innovadoras S.L.",
         funciones= "Programación App Web",
         horario= "L-V 8-14",
         plazas= LinkedHashMap<String, Int>(),
-        estado = "Completada"
+        estado = "Completada",
+        coordinador = "juan.perez@escuela.edu",
+        alumnos = null
     )
 
     val solicitud2 = Solicitud(
         nif= "B87654321",
-        name = "Tecnologías Avanzadas S.A.",
+        empresa = "Tecnologías Avanzadas S.A.",
         funciones= "Programación App Móvil",
         horario= "L-V 8-15",
         plazas=LinkedHashMap<String, Int>(),
-        estado="Completada"
+        estado="Completada",
+        coordinador = "juan.perez@escuela.edu",
+        alumnos = null
     )
 
     solicitud1.plazas.put("DAW", 1)

@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.sp
 // Define tu esquema de colores
 private val MyLightColors = lightColorScheme(
     primary = Color(0xFF364F59),
-    secondary = Color(0xFFFFFFFF),
+    secondary = Color(0xFFFFFFFF)
     // Define otros colores necesarios
 )
 

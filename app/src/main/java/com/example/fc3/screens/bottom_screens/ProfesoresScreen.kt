@@ -12,10 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +40,7 @@ fun ProfesoresScreen(navController: NavHostController, viewModel: ProfesorViewMo
 {
 
     Column (
-        modifier = Modifier.fillMaxSize().background(Color(0xFF364F59))
+        modifier = Modifier.fillMaxSize()
     )
     {
 
@@ -110,6 +107,12 @@ fun ProfesorItem(profesor: Profesor, navController: NavHostController, viewModel
     }*/
 
     Card(
+        colors = CardDefaults.cardColors(
+            contentColor = Color.White,
+            containerColor = Color(0xFF364F59),
+            disabledContentColor = Color(0xFF364F59) ,
+            disabledContainerColor = Color.White
+        ),
         modifier = Modifier
             .padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 0.dp)
             .fillMaxWidth()
@@ -134,7 +137,7 @@ fun ProfesorItem(profesor: Profesor, navController: NavHostController, viewModel
                     overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                Text(
+                /*Text(
                     text = profesor.email,
                     fontWeight = FontWeight.Medium,
                     fontSize = 15.sp,
@@ -149,7 +152,7 @@ fun ProfesorItem(profesor: Profesor, navController: NavHostController, viewModel
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(10.dp))*/
                 Text(
                     text = profesor.tutoria,
                     fontWeight = FontWeight.Medium,
@@ -200,7 +203,7 @@ fun ProfesorItem(profesor: Profesor, navController: NavHostController, viewModel
                     }
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.chat), // Icono de chat para representar WhatsApp
+                        painter = painterResource(id = R.drawable.whatsapp), // Icono de chat para representar WhatsApp
                         contentDescription = "WhatsApp Icon")
                 }
 
@@ -227,11 +230,7 @@ fun ProfesorItem(profesor: Profesor, navController: NavHostController, viewModel
                         painter = painterResource(id = R.drawable.phone), // Icono de Teléfono
                         contentDescription = "Phone Icon")
                 }
-            }
 
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
                 IconButton(
                     onClick = {
                         //Dialog preguntando si estás seguro + Borrado de la BBDD + Actualizar vista de la Lista
@@ -240,6 +239,12 @@ fun ProfesorItem(profesor: Profesor, navController: NavHostController, viewModel
                     Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Icon")
                 }
             }
+
+           /* Column(
+                modifier = Modifier.weight(1f)
+            ) {
+
+            }*/
         }
     }
 }

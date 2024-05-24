@@ -2,6 +2,7 @@ package com.example.fc3.screens.formularios
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
@@ -13,6 +14,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
@@ -60,7 +62,9 @@ fun FormularioSolicitudScreen(navController: NavController) {
         "Marketing y Publicidad G.S.",
     )
 
-    Column()
+    Column(
+        modifier = Modifier.background(color = Color.White)
+    )
     {
 
         Image(
@@ -89,7 +93,7 @@ fun FormularioSolicitudScreen(navController: NavController) {
         {
             item {
                 //Debe autorellenarse con la información de la empresa
-                TextField(
+                OutlinedTextField(
                     value = nif,
                     onValueChange = { nif = it },
                     label = { Text("NIF") },
@@ -99,7 +103,7 @@ fun FormularioSolicitudScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 //Debe autorellenarse con la información de la empresa
-                TextField(
+                OutlinedTextField(
                     value = nombreEmpresa,
                     onValueChange = { nombreEmpresa = it },
                     label = { Text("Nombre de la empresa") },
@@ -127,7 +131,7 @@ fun FormularioSolicitudScreen(navController: NavController) {
             }
             item{
                 Spacer(modifier = Modifier.height(16.dp))
-                TextField(
+                OutlinedTextField(
                     value = funciones ,
                     onValueChange = { funciones = it },
                     label = { Text("Funciones a realizar") },
@@ -137,7 +141,7 @@ fun FormularioSolicitudScreen(navController: NavController) {
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
-                TextField(
+                OutlinedTextField(
                     value = horarioLaboral ,
                     onValueChange = { horarioLaboral = it },
                     label = { Text("Horario Laboral") },
