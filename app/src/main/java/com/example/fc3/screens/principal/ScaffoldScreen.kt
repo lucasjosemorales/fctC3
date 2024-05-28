@@ -1,12 +1,11 @@
-package com.example.fc3.screens
+package com.example.fc3.screens.principal
 
 import android.app.Activity
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,7 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavBackStackEntry
@@ -27,17 +25,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.fc3.navigation.*
-import com.example.fc3.screens.bottom_screens.AlumnosScreen
-import com.example.fc3.screens.bottom_screens.EmpresasScreen
-import com.example.fc3.screens.bottom_screens.ProfesoresScreen
-import com.example.fc3.screens.bottom_screens.SolicitudesScreen
+import com.example.fc3.screens.bottom_screens.*
 import com.example.fc3.screens.formularios.FormularioAlumnoScreen
 import com.example.fc3.screens.formularios.FormularioEmpresaScreen
 import com.example.fc3.screens.formularios.FormularioProfesorScreen
 import com.example.fc3.screens.formularios.FormularioSolicitudScreen
 import com.example.fc3.viewmodels.AlumnoViewModel
 import com.example.fc3.viewmodels.ProfesorViewModel
-import com.example.fctc3.R
+import com.example.fct.models.Profesor
+import kotlinx.coroutines.launch
 
 @Composable
 fun SetStatusBarColor() {
@@ -54,18 +50,13 @@ fun SetStatusBarColor() {
 @Composable
 fun ScaffoldScreen(navController: NavHostController, viewModel: List<ViewModel>)
 {
-
     //var showDialog by remember { mutableStateOf(false) }
     val navController = rememberNavController()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val showFloatingActionButton = remember(currentRoute) {
-        (currentRoute != AppScreens.SolicitudesScreen.route) &&
-                (currentRoute != AppScreens.FormularioProfesorScreen.route) &&
-                    (currentRoute != AppScreens.FormularioAlumnoScreen.route) &&
-                        (currentRoute != AppScreens.FormularioEmpresaScreen.route) &&
-                            (currentRoute != AppScreens.FormularioSolicitudScreen.route)
+        (currentRoute == AppScreens.EmpresasScreen.route) || (currentRoute == AppScreens.AlumnosScreen.route)
     }
 
     val showNavigationContent = remember(currentRoute) {
@@ -83,21 +74,21 @@ fun ScaffoldScreen(navController: NavHostController, viewModel: List<ViewModel>)
                 (currentRoute == AppScreens.FormularioSolicitudScreen.route)
     }
 
-
-   /* if (showDialog)
-        mostrarAlertDialog(navController, onDismiss = { showDialog = false })*/
-
     SetStatusBarColor()
 
     Scaffold(
+
         content = { innerPadding -> NavigationGraph(navController, innerPadding, viewModel) },
         topBar = {
-                 if (showTopAppBar)
-                    ExampleTopAppBar(navController)
+                    if (showTopAppBar)
+                        TopAppBar(navController)
                  },
         bottomBar = {
                         if (showNavigationContent)
+                        {
                             BottomNavigationContent(navController)
+                        }
+
                     },
         floatingActionButton = {
 
@@ -127,29 +118,6 @@ fun ScaffoldScreen(navController: NavHostController, viewModel: List<ViewModel>)
 
     )
 }
-
-/*
-@Composable
-fun mostrarAlertDialog(navController: NavHostController, onDismiss: () -> Unit)
-{
-    AlertDialog(
-        onDismissRequest = { onDismiss },
-        title = { },
-        text = { LazyColumn { item{FormularioAlumnoScreen(navController, null)  } } },
-        confirmButton = {
-            Button(
-                onClick = {onDismiss},
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-            )
-            {
-                Text("Confirmar")
-            }
-        },
-        modifier = Modifier.fillMaxSize(fraction = 0.9F) // Ocupa el 90% de la pantalla
-            .padding(10.dp), // Añade un poco de padding alrededor del diálogo
-        properties = DialogProperties(usePlatformDefaultWidth = false) // Desactiva el ancho predeterminado del diálogo para permitir la personalización
-    )
-}*/
 
 private fun OnClickFAB(navController: NavHostController)
 {
@@ -190,7 +158,7 @@ fun textoTopAppBar()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ExampleTopAppBar(navController: NavHostController) {
+private fun TopAppBar(navController: NavHostController) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -200,43 +168,21 @@ private fun ExampleTopAppBar(navController: NavHostController) {
                 (currentRoute != AppScreens.ProfesoresScreen.route) &&
                 (currentRoute != AppScreens.SolicitudesScreen.route)}
 
-    val showActions = remember(currentRoute) {
+    /*val showActions = remember(currentRoute) {
         (currentRoute != AppScreens.FormularioProfesorScreen.route) &&
                 (currentRoute != AppScreens.FormularioAlumnoScreen.route) &&
                 (currentRoute != AppScreens.FormularioEmpresaScreen.route) &&
                 (currentRoute != AppScreens.FormularioSolicitudScreen.route)
-    }
+    }*/
 
-        TopAppBar(
+    TopAppBar(
         title = { textoTopAppBar() },
-        actions = {
-            Row(
-                modifier = Modifier.fillMaxHeight(),
-                verticalAlignment = Alignment.CenterVertically
-            )
-            {
-                if (showActions)
-                {
-                    IconButton(onClick = { }) {
-                        Icon(imageVector = Icons.Filled.Search, contentDescription = "Buscar")
-                    }
-                    IconButton(onClick = { }) {
-                        Icon(painter = painterResource(id = R.drawable.filtrar), contentDescription = "Ordenar")
-                    }
-                    /*IconButton(onClick = { }) {
-                        Icon(painter = painterResource(id = R.drawable.ordenar), contentDescription = "Filtrar")
-                    }*/
-                    /*IconButton(onClick = { }) {
-                        Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "Más")
-                    }*/
-                }
-            }
-        },
         modifier = Modifier.height(56.dp),
         navigationIcon = {
-            if (showNavigationIconButton) {
+            if (showNavigationIconButton)
+            {
                 IconButton(onClick = { navController.navigateUp() }) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                 }
             }
         },
@@ -256,6 +202,7 @@ fun appBarColors() = TopAppBarDefaults.smallTopAppBarColors(
 fun BottomNavigationContent(navController: NavHostController)
 {
     val items = listOf(AppScreens.EmpresasScreen, AppScreens.AlumnosScreen, AppScreens.ProfesoresScreen, AppScreens.SolicitudesScreen)
+    val itemsAdmin = listOf(AppScreens.EmpresasScreen, AppScreens.AlumnosScreen, AppScreens.ProfesoresScreen, AppScreens.SolicitudesScreen, AppScreens.AdminScreen)
 
     NavigationBar(
         modifier = Modifier.height(72.dp).fillMaxSize()
@@ -265,25 +212,54 @@ fun BottomNavigationContent(navController: NavHostController)
         val backStackEntry: NavBackStackEntry? by navController.currentBackStackEntryAsState()
         val currentRoute: String? = backStackEntry?.destination?.route
 
-        items.forEach { item: AppScreens ->
-            val isSelected = (item.route == currentRoute)
-            NavigationBarItem(
-                selected = (currentRoute == item.route),
-                icon = ({ Icon(painter = painterResource(if (isSelected) item.selectedIcon else item.icon), contentDescription = null) }),
-                label = { Text(text = item.title) },
-                onClick = {
-                    navController.navigate(item.route){
-                        // Aquí puedes agregar lógicas de navegación como limpiar el backstack o evitar múltiples copias
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+        //Sí es admin
+        if (true)
+        {
+            itemsAdmin.forEach { item: AppScreens ->
+                val isSelected = (item.route == currentRoute)
+                NavigationBarItem(
+                    selected = (currentRoute == item.route),
+                    icon = ({ Icon(painter = painterResource(if (isSelected) item.selectedIcon else item.icon), contentDescription = null) }),
+                    label = { Text(text = item.title) },
+                    onClick = {
+                        navController.navigate(item.route){
+                            // Aquí puedes agregar lógicas de navegación como limpiar el backstack o evitar múltiples copias
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-                colors = customNavigationBarItemColors()
-            )
+                    },
+                    colors = customNavigationBarItemColors()
+                )
+            }
         }
+        //No es Admin
+        else
+        {
+            items.forEach { item: AppScreens ->
+                val isSelected = (item.route == currentRoute)
+                NavigationBarItem(
+                    selected = (currentRoute == item.route),
+                    icon = ({ Icon(painter = painterResource(if (isSelected) item.selectedIcon else item.icon), contentDescription = null) }),
+                    label = { Text(text = item.title) },
+                    onClick = {
+                        navController.navigate(item.route){
+                            // Aquí puedes agregar lógicas de navegación como limpiar el backstack o evitar múltiples copias
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    colors = customNavigationBarItemColors()
+                )
+            }
+        }
+
+
     }
 }
 
@@ -358,6 +334,9 @@ fun NavigationGraph(navController: NavHostController, inner: PaddingValues, view
             composable(route=AppScreens.FormularioAlumnoScreen.route){
 
                 FormularioAlumnoScreen(navController, alumnoViewModel.alumno.value)
+            }
+            composable(route=AppScreens.AdminScreen.route){
+                AdminScreen(navController)
             }
 
         }

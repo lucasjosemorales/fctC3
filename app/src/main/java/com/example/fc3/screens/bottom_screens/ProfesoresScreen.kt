@@ -48,7 +48,8 @@ fun ProfesoresScreen(navController: NavHostController, viewModel: ProfesorViewMo
             name = "Juan Pérez",
             email = "juan.perez@escuela.edu",
             phoneNumber = "123456789",
-            tutoria = "2DAM-D"
+            tutoria = "2DAM-D",
+            admin=true
         )
 
         val profesor2 = Profesor(
@@ -86,25 +87,8 @@ fun ProfesoresScreen(navController: NavHostController, viewModel: ProfesorViewMo
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun ProfesorItem(profesor: Profesor, navController: NavHostController, viewModel: ProfesorViewModel) {
-    //var showDeleteEmpresaDialog by remember { mutableStateOf(false)}
-
-    /*val onDeleteEmpresaConfirmed: () -> Unit = {
-        realtime.deleteEmpresa(empresa.key ?: "")
-    }*/
-
-    /*
-    if (showDeleteEmpresaDialog) {
-        DeleteEmpresaDialog(
-            onConfirmDelete = {
-                onDeleteEmpresaConfirmed()
-                showDeleteEmpresaDialog = false
-            },
-            onDismiss = {
-                showDeleteEmpresaDialog = false
-            }
-        )
-    }*/
+fun ProfesorItem(profesor: Profesor, navController: NavHostController, viewModel: ProfesorViewModel)
+{
 
     Card(
         colors = CardDefaults.cardColors(
@@ -231,13 +215,6 @@ fun ProfesorItem(profesor: Profesor, navController: NavHostController, viewModel
                         contentDescription = "Phone Icon")
                 }
 
-                IconButton(
-                    onClick = {
-                        //Dialog preguntando si estás seguro + Borrado de la BBDD + Actualizar vista de la Lista
-                    },
-                ) {
-                    Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Icon")
-                }
             }
 
            /* Column(

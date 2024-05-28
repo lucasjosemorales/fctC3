@@ -12,6 +12,7 @@ sealed class AppScreens(val route: String, var title:String, var icon: Int, var 
 
     //Pantalla principal
     object ScaffoldScreen: AppScreens("scaffold_screen", "", 0, 0)
+    object DrawerScreen: AppScreens("drawer_screen", "", 0, 0)
 
     //Formularios
     object FormularioEmpresaScreen: AppScreens("formulario_empresa_screen", "", 0, 0)
@@ -24,5 +25,6 @@ sealed class AppScreens(val route: String, var title:String, var icon: Int, var 
     object EmpresasScreen: AppScreens("empresas_screen", "Empresas", R.drawable.empresas_outline, R.drawable.empresas)
     object ProfesoresScreen: AppScreens("profesores_screen", "Profesores", R.drawable.profesores_outline,  R.drawable.profesores)
     object SolicitudesScreen: AppScreens("solicitudes_screen", "Solicitudes", R.drawable.solicitudes_outline, R.drawable.solicitudes)
+    object AdminScreen: AppScreens("admin_screen", "Admin", R.drawable.admin_outline, R.drawable.admin)
 
 }

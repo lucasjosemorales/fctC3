@@ -7,7 +7,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.fct.models.Profesor
 
-class ProfesorViewModel(private val state: SavedStateHandle) : ViewModel() {
+class ProfesorViewModel(private val state: SavedStateHandle) : ViewModel()
+{
 
     var profesor = mutableStateOf<Profesor?>(null)
 
@@ -37,6 +38,13 @@ class ProfesorViewModel(private val state: SavedStateHandle) : ViewModel() {
 
     fun setTutoria(tutoria: String) {
         _tutoria.value = tutoria
+    }
+
+    private val _admin = MutableLiveData<Boolean>()
+    val admin: LiveData<Boolean> = _admin
+
+    fun setAdmin(admin: Boolean) {
+        _admin.value = admin
     }
 
     private val _expanded = MutableLiveData<Boolean>()
