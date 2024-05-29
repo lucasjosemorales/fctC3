@@ -198,7 +198,7 @@ fun Demo_ExposedDropdownMenuBox(lista: List<String>, viewModel: ProfesorViewMode
                             viewModel.setExpanded(false)
                         }
                     )
-                    Divider()
+                    HorizontalDivider()
                 }
             }
         }

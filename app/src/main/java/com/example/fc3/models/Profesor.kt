@@ -5,5 +5,6 @@ data class Profesor(
     val email: String = "",
     val phoneNumber: String = "",
     val tutoria: String = "",
-    val admin:Boolean = false
+    val admin:Boolean = false,
+    val activo:Boolean = true
 )

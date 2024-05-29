@@ -10,7 +10,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.fc3.screens.bottom_screens.*
-import com.example.fc3.screens.principal.DrawerScreen
 import com.example.fc3.screens.formularios.FormularioAlumnoScreen
 import com.example.fc3.screens.formularios.FormularioEmpresaScreen
 import com.example.fc3.screens.formularios.FormularioProfesorScreen
@@ -47,9 +46,6 @@ fun AppNavigation()
         //Pantalla principal
         composable1(route=AppScreens.ScaffoldScreen.route){
             ScaffoldScreen(navController, listaVM)
-        }
-        composable1(route=AppScreens.DrawerScreen.route){
-            DrawerScreen(navController, listaVM)
         }
 
         //Formularios

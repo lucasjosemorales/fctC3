@@ -1,23 +1,19 @@
 package com.example.fc3.screens.bottom_screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.fc3.viewmodels.AlumnoViewModel
-import com.example.fc3.viewmodels.ProfesorViewModel
+import com.example.fc3.screens.alerts.*
+
 
 @Composable
 fun AdminScreen(navController: NavHostController)
@@ -32,28 +28,74 @@ fun AdminScreen(navController: NavHostController)
             ),
         contentAlignment = Alignment.Center
     ) {
+
+        val showDialog = remember { mutableStateOf(false) }
+        var dialogItem = remember { mutableStateOf(0) }
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
+
+
+            if (showDialog.value)
+            {
+                when(dialogItem.value)
+                {
+                    0 -> AlertDialogAñadirProfesor(navController, showDialog)
+                    1 -> AlertDialogEliminarProfesor(showDialog)
+                    2 -> AlertDialogAñadirCicloFormativo(showDialog)
+                    3 -> AlertDialogEliminarCicloFormativo(showDialog)
+                    4 -> AlertDialogAñadirGrupo(showDialog)
+                    5 -> AlertDialogEliminarGrupo(showDialog)
+                    else -> AlertDialogAñadirProfesor(navController, showDialog)
+                }
+            }
+
             // Lista de botones
-            listOf("Añadir profesor", "Eliminar profesor", "Añadir Ciclo Formativo", "Eliminar Ciclo Formativo", "Añadir grupo", "Eliminar grupo").forEach { buttonText ->
-                Button(
-                    elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 8.dp, pressedElevation = 12.dp),
-                    onClick = { /* Acción del botón */ },
+            listOf("Añadir profesor", "Eliminar profesor", "Añadir Ciclo Formativo", "Eliminar Ciclo Formativo", "Añadir grupo", "Eliminar grupo").
+            forEach { buttonText ->
+
+                Surface(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp, horizontal = 32.dp), // Espacio para el borde
                     shape = CutCornerShape(
                         topStart = 0f,
                         topEnd = 0f,
                         bottomEnd = 0f,
                         bottomStart = 100f
-                    ), // Bordes redondeados
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color(0xFF364F59)),
-                    modifier = Modifier
-                        .height(50.dp)
-                        .fillMaxWidth(0.8f)
-                        .padding(horizontal = 10.dp)
+                    ), // Borde redondeado
+                    border = BorderStroke(2.dp, Color(0xFF364F59)), // Establece el color y grosor del borde
+
                 ) {
-                    Text(buttonText)
+                    ElevatedButton(
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color(0xFF364F59)),
+                        onClick = {
+                                        showDialog.value = true
+                                        dialogItem.value = when (buttonText)
+                                        {
+                                            "Añadir profesor" -> 0
+                                            "Eliminar profesor" -> 1
+                                            "Añadir Ciclo Formativo" -> 2
+                                            "Eliminar Ciclo Formativo" -> 3
+                                            "Añadir grupo" -> 4
+                                            "Eliminar grupo" -> 5
+                                            else -> -1
+                                        }
+                        },
+                        elevation = ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 8.dp,
+                            pressedElevation = 12.dp
+                        ),
+                        /*modifier = ,*/ // Relleno para separar el contenido del borde
+                        shape = CutCornerShape(
+                            topStart = 0f,
+                            topEnd = 0f,
+                            bottomEnd = 0f,
+                            bottomStart = 100f
+                        ) // Debe ser ligeramente menor que el Surface para coincidir
+                    ) {
+                        Text(buttonText)
+                    }
                 }
             }
         }
