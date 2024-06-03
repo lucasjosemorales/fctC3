@@ -47,7 +47,7 @@ fun SearchBar(modifier: Modifier, onSearch: (String) -> Unit)
             onSearch(it)
         },
         modifier = modifier,
-        label = { Text("Search") },
+        label = { Text("Texto a buscar...") },
         singleLine = true,
     )
 }
@@ -58,14 +58,13 @@ fun AlumnosScreen(navController: NavHostController, viewModel: AlumnoViewModel)
 
     var searchText by remember { mutableStateOf("") }
 
-
     Column (
         modifier = Modifier.fillMaxSize()
     )
     {
 
         SearchBar(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 0.dp),
             onSearch = { newText ->
                 searchText = newText
             }

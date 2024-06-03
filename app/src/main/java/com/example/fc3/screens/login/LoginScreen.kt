@@ -37,8 +37,6 @@ fun LoginScreen(navController: NavController)
     )
     {
 
-
-
         LazyColumn(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.Center

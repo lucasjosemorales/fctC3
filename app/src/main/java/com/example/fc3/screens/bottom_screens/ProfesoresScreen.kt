@@ -13,7 +13,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,11 +38,19 @@ import com.google.accompanist.permissions.rememberPermissionState
 @Composable
 fun ProfesoresScreen(navController: NavHostController, viewModel: ProfesorViewModel)
 {
+    var searchText by remember { mutableStateOf("") }
 
     Column (
         modifier = Modifier.fillMaxSize()
     )
     {
+
+        SearchBar(
+            modifier = Modifier.fillMaxWidth().padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 0.dp),
+            onSearch = { newText ->
+                searchText = newText
+            }
+        )
 
         val profesor1 = Profesor(
             name = "Juan Pérez",
@@ -68,8 +76,12 @@ fun ProfesoresScreen(navController: NavHostController, viewModel: ProfesorViewMo
 
         val profesores: List<Profesor> = listOf(profesor1, profesor2, profesor3, profesor1, profesor2, profesor3)
 
+        val filteredItems = remember(searchText) {
+            profesores.filter { it.name.contains(searchText, ignoreCase = true)
+                    || it.tutoria.contains(searchText, ignoreCase = true) }}
+
         LazyColumn {
-            profesores.forEach{ profesor ->
+            filteredItems.forEach{ profesor ->
                 item {
                     ProfesorItem(profesor = profesor, navController, viewModel)
                 }

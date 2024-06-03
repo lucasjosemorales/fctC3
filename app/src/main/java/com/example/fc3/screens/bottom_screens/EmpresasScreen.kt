@@ -1,6 +1,5 @@
 package com.example.fc3.screens.bottom_screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,7 +8,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,14 +19,24 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.fc3.models.Empresa
 import com.example.fc3.navigation.AppScreens
+import com.example.fc3.viewmodels.EmpresaViewModel
 
 @Composable
-fun EmpresasScreen(navController: NavHostController)
+fun EmpresasScreen(navController: NavHostController, viewModel: EmpresaViewModel)
 {
+    var searchText by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier.fillMaxSize()
     )
     {
+
+        SearchBar(
+            modifier = Modifier.fillMaxWidth().padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 0.dp),
+            onSearch = { newText ->
+                searchText = newText
+            }
+        )
 
         val empresa1 = Empresa(
             nif = "A12345678",
@@ -35,7 +44,11 @@ fun EmpresasScreen(navController: NavHostController)
             localidad = "Madrid",
             personaContacto = "Ana Martínez",
             tfnoContacto = "912345678",
-            email = "contacto@solucionesinnovadoras.com"
+            email = "contacto@solucionesinnovadoras.com",
+            repetidor = true,
+            contratar = true,
+            dual= true,
+            observaciones = "Tenemos sede en Murcia"
         )
 
         val empresa2 = Empresa(
@@ -47,12 +60,35 @@ fun EmpresasScreen(navController: NavHostController)
             email = "info@tecnologiasavanzadas.es"
         )
 
-        val empresas: List<Empresa> = listOf(empresa1, empresa2)
+        val empresa3 = Empresa(
+            nif = "B87654321",
+            name = "Tecnologías Avanzadas S.A.",
+            localidad = "Barcelona",
+            personaContacto = "Carlos Gómez",
+            tfnoContacto = "932765432",
+            email = "info@tecnologiasavanzadas.es"
+        )
+
+        val empresa4 = Empresa(
+            nif = "A12345678",
+            name = "Soluciones Innovadoras S.L.",
+            localidad = "Madrid",
+            personaContacto = "Ana Martínez",
+            tfnoContacto = "912345678",
+            email = "contacto@solucionesinnovadoras.com"
+        )
+
+        val empresas: List<Empresa> = listOf(empresa1, empresa2, empresa3, empresa4)
+
+        val filteredItems = remember(searchText) {
+            empresas.filter { it.name.contains(searchText, ignoreCase = true)
+                    || it.personaContacto.contains(searchText, ignoreCase = true) }}
+
 
         LazyColumn {
-            empresas.forEach{ empresa ->
+            filteredItems.forEach{ empresa ->
                 item {
-                    EmpresaItem(empresa = empresa, navController)
+                    EmpresaItem(empresa = empresa, navController, viewModel)
                 }
 
             }
@@ -64,8 +100,10 @@ fun EmpresasScreen(navController: NavHostController)
     }
 }
 
+
+
 @Composable
-fun EmpresaItem(empresa: Empresa, navController: NavHostController)
+fun EmpresaItem(empresa: Empresa, navController: NavHostController, viewModel: EmpresaViewModel)
 {
     //var showDeleteEmpresaDialog by remember { mutableStateOf(false)}
 
@@ -96,7 +134,10 @@ fun EmpresaItem(empresa: Empresa, navController: NavHostController)
         modifier = Modifier
             .padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 0.dp)
             .fillMaxWidth()
-            .clickable { navController.navigate(route = AppScreens.FormularioEmpresaScreen.route) })
+            .clickable {
+                        viewModel.empresa.value= empresa
+                        navController.navigate(route = AppScreens.FormularioEmpresaScreen.route)
+            })
     {
         Row(
             modifier = Modifier

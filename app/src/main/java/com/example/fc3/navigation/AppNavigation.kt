@@ -18,6 +18,7 @@ import com.example.fc3.screens.login.ForgotScreen
 import com.example.fc3.screens.login.LoginScreen
 import com.example.fc3.screens.principal.ScaffoldScreen
 import com.example.fc3.viewmodels.AlumnoViewModel
+import com.example.fc3.viewmodels.EmpresaViewModel
 import com.example.fc3.viewmodels.ProfesorViewModel
 import androidx.navigation.compose.composable as composable1
 
@@ -31,7 +32,8 @@ fun AppNavigation()
     /* ViewModels para el paso entre pantallas */
     val alumnoViewModel: AlumnoViewModel = viewModel()
     val profesorViewModel: ProfesorViewModel = viewModel()
-    val listaVM: List<ViewModel> = listOf(alumnoViewModel, profesorViewModel)
+    val empresaViewModel: EmpresaViewModel = viewModel()
+    val listaVM: List<ViewModel> = listOf(alumnoViewModel, profesorViewModel, empresaViewModel)
 
     NavHost(navController=navController, startDestination=AppScreens.LoginScreen.route)
     {
@@ -50,7 +52,7 @@ fun AppNavigation()
 
         //Formularios
         composable1(route=AppScreens.FormularioEmpresaScreen.route){
-            FormularioEmpresaScreen(navController)
+            FormularioEmpresaScreen(navController, empresaViewModel.empresa.value)
         }
         composable1(route=AppScreens.FormularioProfesorScreen.route){
             FormularioProfesorScreen(navController, profesorViewModel.profesor.value)
@@ -68,7 +70,7 @@ fun AppNavigation()
             AlumnosScreen(navController, alumnoViewModel)
         }
         composable1(route=AppScreens.EmpresasScreen.route){
-            EmpresasScreen(navController)
+            EmpresasScreen(navController, empresaViewModel)
         }
         composable1(route=AppScreens.ProfesoresScreen.route){
             ProfesoresScreen(navController, profesorViewModel)

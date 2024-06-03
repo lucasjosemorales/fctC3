@@ -23,7 +23,7 @@ fun AdminScreen(navController: NavHostController)
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(Color(0xFF647C87), Color.White)
+                    colors = listOf(Color.White, Color(0xFF647C87), Color.White)
                 )
             ),
         contentAlignment = Alignment.Center

@@ -31,6 +31,7 @@ import com.example.fc3.screens.formularios.FormularioEmpresaScreen
 import com.example.fc3.screens.formularios.FormularioProfesorScreen
 import com.example.fc3.screens.formularios.FormularioSolicitudScreen
 import com.example.fc3.viewmodels.AlumnoViewModel
+import com.example.fc3.viewmodels.EmpresaViewModel
 import com.example.fc3.viewmodels.ProfesorViewModel
 import com.example.fct.models.Profesor
 import kotlinx.coroutines.launch
@@ -106,6 +107,9 @@ fun ScaffoldScreen(navController: NavHostController, viewModel: List<ViewModel>)
 
                         val profesorViewModel: ProfesorViewModel = viewModel[1] as ProfesorViewModel
                         profesorViewModel.profesor.value = null
+
+                        val empresaViewModel: EmpresaViewModel = viewModel[2] as EmpresaViewModel
+                        empresaViewModel.empresa.value = null
 
                         OnClickFAB(navController)
                     }
@@ -192,7 +196,7 @@ private fun TopAppBar(navController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun appBarColors() = TopAppBarDefaults.smallTopAppBarColors(
+fun appBarColors() = TopAppBarDefaults.topAppBarColors(
     containerColor = Color.White,
     titleContentColor = Color(0xFF364F59),  // Texto e íconos
     actionIconContentColor = Color(0xFF364F59)
@@ -293,6 +297,7 @@ fun NavigationGraph(navController: NavHostController, inner: PaddingValues, view
 
         val alumnoViewModel: AlumnoViewModel = viewModel[0] as AlumnoViewModel
         val profesorViewModel: ProfesorViewModel = viewModel[1] as ProfesorViewModel
+        val empresaViewModel: EmpresaViewModel = viewModel[2] as EmpresaViewModel
 
         NavHost(
             navController = navController,
@@ -308,7 +313,7 @@ fun NavigationGraph(navController: NavHostController, inner: PaddingValues, view
 
             composable(AppScreens.EmpresasScreen.route)
             {
-                EmpresasScreen(navController)
+                EmpresasScreen(navController, viewModel = empresaViewModel)
             }
 
             composable(AppScreens.ProfesoresScreen.route)
@@ -323,7 +328,7 @@ fun NavigationGraph(navController: NavHostController, inner: PaddingValues, view
 
             //Formularios
             composable(route=AppScreens.FormularioEmpresaScreen.route){
-                FormularioEmpresaScreen(navController)
+                FormularioEmpresaScreen(navController, empresaViewModel.empresa.value)
             }
             composable(route=AppScreens.FormularioProfesorScreen.route){
                 FormularioProfesorScreen(navController, profesorViewModel.profesor.value)
