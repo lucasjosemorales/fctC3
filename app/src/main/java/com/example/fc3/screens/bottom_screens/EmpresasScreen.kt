@@ -78,7 +78,9 @@ fun EmpresasScreen(navController: NavHostController, viewModel: EmpresaViewModel
             email = "contacto@solucionesinnovadoras.com"
         )
 
-        val empresas: List<Empresa> = listOf(empresa1, empresa2, empresa3, empresa4)
+        //val empresas: List<Empresa> = listOf(empresa1, empresa2, empresa3, empresa4)
+
+        val empresas: List<Empresa> = obtenerEmpresas()
 
         val filteredItems = remember(searchText) {
             empresas.filter { it.name.contains(searchText, ignoreCase = true)
