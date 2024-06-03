@@ -1,7 +1,7 @@
 {
   "project_info": {
     "project_number": "759465068267",
-    "project_id": "fct-c3",
+    "project_id": "FCTC3",
     "storage_bucket": "fct-c3.appspot.com"
   },
   "client": [
@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:759465068267:android:8fc1e79f79ceecfe4920ae",
         "android_client_info": {
-          "package_name": "com.example.fc3"
+          "package_name": "com.example.fctc3"
         }
       },
       "oauth_client": [],
