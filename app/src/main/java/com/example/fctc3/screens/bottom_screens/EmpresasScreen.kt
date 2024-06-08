@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.fctc3.models.Empresa
 import com.example.fctc3.navigation.AppScreens
-import com.example.fctc3.viewmodels.EmpresaViewModel
+import com.example.fctc3.viewmodels.screens.EmpresaViewModel
 
 @Composable
 fun EmpresasScreen(navController: NavHostController, viewModel: EmpresaViewModel)

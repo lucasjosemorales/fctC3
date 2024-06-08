@@ -9,13 +9,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.fctc3.models.Ciclo
+import com.example.fctc3.viewmodels.bbdd.CicloViewModel
 
 
 @Composable
 fun AlertDialogAñadirCicloFormativo(showDialog: MutableState<Boolean>)
 {
-    var firstInput by remember { mutableStateOf("") }
-    var secondInput by remember { mutableStateOf("") }
+    var nombreCorto by remember { mutableStateOf("") }
+    var nombreLargo by remember { mutableStateOf("") }
+    var familia by remember { mutableStateOf("") }
+
+    val cicloViewModel: CicloViewModel = viewModel()
 
     if (showDialog.value)
     {
@@ -34,8 +41,8 @@ fun AlertDialogAñadirCicloFormativo(showDialog: MutableState<Boolean>)
             text = {
                 Column {
                     OutlinedTextField(
-                        value = firstInput,
-                        onValueChange = { firstInput = it },
+                        value = nombreCorto,
+                        onValueChange = { nombreCorto = it },
                         label = { Text("Nombre corto") },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -43,9 +50,18 @@ fun AlertDialogAñadirCicloFormativo(showDialog: MutableState<Boolean>)
                     Spacer(modifier = Modifier.padding(4.dp))
 
                     OutlinedTextField(
-                        value = secondInput,
-                        onValueChange = { secondInput = it },
+                        value = nombreLargo,
+                        onValueChange = { nombreLargo = it },
                         label = { Text("Nombre largo") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.padding(4.dp))
+
+                    OutlinedTextField(
+                        value = familia,
+                        onValueChange = { familia = it },
+                        label = { Text("Familia") },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -59,6 +75,13 @@ fun AlertDialogAñadirCicloFormativo(showDialog: MutableState<Boolean>)
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                         onClick = {
                             // Confirm action
+                            cicloViewModel.añadirCiclo(
+                                Ciclo(
+                                    nombreCorto = nombreCorto,
+                                    nombreLargo = nombreLargo,
+                                    familia = familia
+                                )
+                            )
                             showDialog.value = false
                         }
                     ) {

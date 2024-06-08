@@ -28,7 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fctc3.models.Empresa
 import com.example.fctc3.navigation.AppScreens
-import com.example.fctc3.viewmodels.EmpresaViewModel
+import com.example.fctc3.viewmodels.screens.EmpresaViewModel
 import com.example.fctc3.R
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)

@@ -29,10 +29,10 @@ import com.example.fctc3.screens.formularios.FormularioAlumnoScreen
 import com.example.fctc3.screens.formularios.FormularioEmpresaScreen
 import com.example.fctc3.screens.formularios.FormularioProfesorScreen
 import com.example.fctc3.screens.formularios.FormularioSolicitudScreen
-import com.example.fctc3.viewmodels.AlumnoViewModel
-import com.example.fctc3.viewmodels.EmpresaViewModel
-import com.example.fctc3.viewmodels.ProfesorViewModel
-import com.example.fctc3.viewmodels.SolicitudViewModel
+import com.example.fctc3.viewmodels.screens.AlumnoViewModel
+import com.example.fctc3.viewmodels.screens.EmpresaViewModel
+import com.example.fctc3.viewmodels.screens.ProfesorViewModel
+import com.example.fctc3.viewmodels.screens.SolicitudViewModel
 import com.example.fct.models.Profesor
 
 @Composable

@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -20,17 +19,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.fctc3.navigation.AppScreens
-import com.example.fctc3.viewmodels.FirestoreViewModel
-import com.example.fctc3.viewmodels.ProfesorViewModel
+import com.example.fctc3.viewmodels.screens.ProfesorViewModel
 import com.example.fct.models.Profesor
 import com.example.fctc3.R
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import kotlinx.coroutines.launch
 
 
 @Composable
@@ -38,48 +34,40 @@ fun ProfesoresScreen(navController: NavHostController, viewModel: ProfesorViewMo
 {
     var searchText by remember { mutableStateOf("") }
 
-    //val firestoreViewModel = FirestoreViewModel()
-    //val profesores = firestoreViewModel.profesores.collectAsState().value
-    //val isLoading = firestoreViewModel.isLoading.collectAsState().value
+    Column (
+        modifier = Modifier.fillMaxSize()
+    )
+    {
 
-
-        Column (
-            modifier = Modifier.fillMaxSize()
+        SearchBar(
+            modifier = Modifier.fillMaxWidth().padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 0.dp),
+            onSearch = { newText ->
+                searchText = newText
+            }
         )
-        {
 
-            SearchBar(
-                modifier = Modifier.fillMaxWidth().padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 0.dp),
-                onSearch = { newText ->
-                    searchText = newText
-                }
-            )
+        //Room
+        val profesores: List<Profesor> by viewModel.profesores.observeAsState(initial = emptyList())
 
-            //Room
-            val profesores: List<Profesor> by viewModel.profesores.observeAsState(initial = emptyList())
-            //viewModel.cargarProfesores()
 
-            //val profesores: List<Profesor> = viewModel.state.listaProfesores
-            //firestoreViewModel.fetchProfesores()
+        val filteredItems = remember(searchText) {
+            profesores.filter { it.name.contains(searchText, ignoreCase = true)
+                    || it.tutoria.contains(searchText, ignoreCase = true) }}
 
-            val filteredItems = remember(searchText) {
-                profesores.filter { it.name.contains(searchText, ignoreCase = true)
-                        || it.tutoria.contains(searchText, ignoreCase = true) }}
-
-            LazyColumn {
-                filteredItems?.forEach{ profesor ->
-                    item {
-                        ProfesorItem(profesor = profesor, navController, viewModel)
-                    }
-                }
-
-                item{
-                    Spacer(modifier =  Modifier.height(72.dp))
+        LazyColumn {
+            filteredItems?.forEach{ profesor ->
+                item {
+                    ProfesorItem(profesor = profesor, navController, viewModel)
                 }
             }
 
+            item{
+                Spacer(modifier =  Modifier.height(72.dp))
+            }
         }
+
     }
+}
 
 
 
@@ -216,12 +204,6 @@ fun ProfesorItem(profesor: Profesor, navController: NavHostController, viewModel
                 }
 
             }
-
-           /* Column(
-                modifier = Modifier.weight(1f)
-            ) {
-
-            }*/
         }
     }
 }

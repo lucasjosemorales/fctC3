@@ -1,4 +1,4 @@
-package com.example.fctc3.viewmodels
+package com.example.fctc3.viewmodels.bbdd
 
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth

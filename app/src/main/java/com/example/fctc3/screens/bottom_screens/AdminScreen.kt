@@ -11,10 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.example.fctc3.navigation.AppScreens
 import com.example.fctc3.screens.alerts.*
-import com.example.fctc3.viewmodels.ProfesorViewModel
+import com.example.fctc3.viewmodels.bbdd.CicloViewModel
+import com.example.fctc3.viewmodels.screens.ProfesorViewModel
 
 
 @Composable
@@ -48,14 +50,15 @@ fun AdminScreen(navController: NavHostController, viewModel: ProfesorViewModel)
                     1 -> AlertDialogEliminarProfesor(showDialog, viewModel)
                     2 -> AlertDialogAñadirCicloFormativo(showDialog)
                     3 -> AlertDialogEliminarCicloFormativo(showDialog)
-                    4 -> AlertDialogAñadirGrupo(showDialog)
-                    5 -> AlertDialogEliminarGrupo(showDialog)
+                   /* 4 -> AlertDialogAñadirGrupo(showDialog)
+                    5 -> AlertDialogEliminarGrupo(showDialog)*/
                     else -> navController.navigate(route = AppScreens.FormularioProfesorScreen.route)
                 }
             }
 
             // Lista de botones
-            listOf("Añadir profesor", "Eliminar profesor", "Añadir Ciclo Formativo", "Eliminar Ciclo Formativo", "Añadir grupo", "Eliminar grupo").
+            //listOf("Añadir profesor", "Eliminar profesor", "Añadir Ciclo Formativo", "Eliminar Ciclo Formativo", "Añadir grupo", "Eliminar grupo")
+            listOf("Añadir profesor", "Eliminar profesor", "Añadir Ciclo Formativo", "Eliminar Ciclo Formativo").
             forEach { buttonText ->
 
                 Surface(
@@ -79,8 +82,8 @@ fun AdminScreen(navController: NavHostController, viewModel: ProfesorViewModel)
                                             "Eliminar profesor" -> 1
                                             "Añadir Ciclo Formativo" -> 2
                                             "Eliminar Ciclo Formativo" -> 3
-                                            "Añadir grupo" -> 4
-                                            "Eliminar grupo" -> 5
+                                            /*"Añadir grupo" -> 4
+                                            "Eliminar grupo" -> 5*/
                                             else -> -1
                                         }
                         },

@@ -1,4 +1,4 @@
-package com.example.fctc3.viewmodels
+package com.example.fctc3.viewmodels.screens
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateOf
@@ -38,8 +38,11 @@ class ProfesorViewModel(application: Application) : AndroidViewModel(application
     fun añadirProfesor(profesor: Profesor)
     {
         viewModelScope.launch {
-            dao.insertarProfesor(profesor)
+            //dao.insertarProfesor(profesor)
+            val profesor = Profesor(profesor.email, profesor.name, profesor.phoneNumber, profesor.tutoria, profesor.admin, profesor.activo)
+            dbFirebase.collection("profesores").document(profesor.email).set(profesor)
         }
+
     }
 
     fun añadirProfesores()
@@ -84,7 +87,8 @@ class ProfesorViewModel(application: Application) : AndroidViewModel(application
     fun eliminarProfesor(email: String)
     {
         viewModelScope.launch {
-            dao.eliminarProfesor(email)
+            //dao.eliminarProfesor(email)
+            dbFirebase.collection("profesores").document(email).delete()
         }
     }
 

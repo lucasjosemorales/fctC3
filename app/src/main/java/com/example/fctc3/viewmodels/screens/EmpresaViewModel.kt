@@ -1,4 +1,4 @@
-package com.example.fctc3.viewmodels
+package com.example.fctc3.viewmodels.screens
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData

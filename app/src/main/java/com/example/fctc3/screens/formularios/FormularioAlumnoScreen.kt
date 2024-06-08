@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.fctc3.navigation.AppScreens
-import com.example.fctc3.viewmodels.AlumnoViewModel
+import com.example.fctc3.viewmodels.screens.AlumnoViewModel
 import com.example.fct.models.Alumno
 import com.example.fctc3.R
 

@@ -19,14 +19,17 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.fctc3.navigation.AppScreens
-import com.example.fctc3.viewmodels.ProfesorViewModel
+import com.example.fctc3.viewmodels.screens.ProfesorViewModel
 import com.example.fct.models.Profesor
 import com.example.fctc3.R
+import com.example.fctc3.models.Ciclo
+import com.example.fctc3.viewmodels.bbdd.CicloViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormularioProfesorScreen(navController: NavHostController, profesor: Profesor) {
     val viewModel: ProfesorViewModel = viewModel()
+    val cicloViewModel: CicloViewModel = viewModel()
 
     val name: String by viewModel.name.observeAsState(initial = profesor?.name ?: "")
     val email: String by viewModel.email.observeAsState(initial = profesor?.phoneNumber ?: "")
@@ -34,26 +37,11 @@ fun FormularioProfesorScreen(navController: NavHostController, profesor: Profeso
     val tutoria: String by viewModel.tutoria.observeAsState(initial = profesor?.tutoria ?: "")
     val admin: Boolean by viewModel.admin.observeAsState(initial = profesor?.admin ?: false)
 
-    /** ELIMINAR HARDCODED TEXT !!*/
+    //BBDD
+    val ciclos: List<Ciclo> by cicloViewModel.ciclos.observeAsState(initial = emptyList())
+    val listaGrupos = ciclos
 
-    /* ASOCIAR DESCRIPCIÓN CON SIGLAS - METER GRUPOS
-
-        "Sistemas Microinformáticos y Redes G.M." --> SMR
-        "Administración de Sistemas Informáticos en Red G.S." --> ASIR
-        "Desarrollo de Aplicaciones Web G.S." --> DAW
-        "Desarrollo de Aplicaciones Multiplataforma G.S. --> DAM
-        "Gestión Administrativa G.M." -->
-        "Administración y Finanzas G.S." -->
-        "Asistencia a la dirección Bilingüe G.S." -->
-        "Actividades Comerciales G.M" -->
-        "Transporte y Logística G.S." -->
-        "Comercio Internacional Bilingüe G.S." -->
-        "Marketing y Publicidad G.S." -->
-
-
-     */
-
-    val listaGrupos = listOf(
+    /*val listaGrupos = listOf(
         "Sistemas Microinformáticos y Redes G.M.",
         "Administración de Sistemas Informáticos en Red G.S.",
         "Desarrollo de Aplicaciones Web G.S.",
@@ -65,7 +53,7 @@ fun FormularioProfesorScreen(navController: NavHostController, profesor: Profeso
         "Transporte y Logística G.S.",
         "Comercio Internacional Bilingüe G.S.",
         "Marketing y Publicidad G.S."
-    )
+    )*/
 
     Column(
         modifier = Modifier.fillMaxWidth().background(color = Color.White),
@@ -117,7 +105,6 @@ fun FormularioProfesorScreen(navController: NavHostController, profesor: Profeso
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        //Demo_ExposedDropdownMenuBox(listaGrupos)
         Demo_ExposedDropdownMenuBox(listaGrupos, viewModel, profesor)
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -150,12 +137,7 @@ fun FormularioProfesorScreen(navController: NavHostController, profesor: Profeso
                     uncheckedBorderColor = Color(0xFF364F59)
                 ),
                 checked = admin,
-                onCheckedChange = {
-                    if (it)
-                        viewModel.setAdmin(true)
-                    else
-                        viewModel.setAdmin(false)
-                }
+                onCheckedChange = {viewModel.setAdmin(it)}
             )
 
         }
@@ -180,7 +162,7 @@ fun FormularioProfesorScreen(navController: NavHostController, profesor: Profeso
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Demo_ExposedDropdownMenuBox(lista: List<String>, viewModel: ProfesorViewModel, profesor: Profesor)
+fun Demo_ExposedDropdownMenuBox(lista: List<Ciclo>, viewModel: ProfesorViewModel, profesor: Profesor)
 {
     val expanded: Boolean by viewModel.expanded.observeAsState(initial = false)
     val selectedText: String by viewModel.selectedText.observeAsState(initial = profesor.tutoria)  //selectedText seria el equivalente al atributo profesor.tutoria
@@ -213,13 +195,13 @@ fun Demo_ExposedDropdownMenuBox(lista: List<String>, viewModel: ProfesorViewMode
                 lista.forEach { item ->
                     DropdownMenuItem(
                         modifier = Modifier.background(color = Color.White),
-                        text = { Text(text = item) },
+                        text = { Text(text = item.nombreLargo) },
                         onClick = {
                             //selectedText = item
-                            viewModel.setSelectedText(item)
+                            viewModel.setSelectedText(item.nombreLargo)
                             //expanded = false
                             viewModel.setExpanded(false)
-                            viewModel.setTutoria(item)
+                            viewModel.setTutoria(item.nombreLargo)
                         }
                     )
                     HorizontalDivider()

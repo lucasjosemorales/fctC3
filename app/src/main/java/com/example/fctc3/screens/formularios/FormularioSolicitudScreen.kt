@@ -30,14 +30,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fctc3.models.Solicitud
 import com.example.fctc3.navigation.AppScreens
-import com.example.fctc3.viewmodels.SolicitudViewModel
+import com.example.fctc3.viewmodels.screens.SolicitudViewModel
 import com.example.fctc3.R
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun FormularioSolicitudScreen(navController: NavController, solicitud: Solicitud?)
 {
-    val viewModel:SolicitudViewModel = viewModel()
+    val viewModel: SolicitudViewModel = viewModel()
 
     val nombreEmpresa by viewModel.nombreEmpresa.observeAsState(initial = solicitud?.empresa ?: "")
     val nif by viewModel.nif.observeAsState(initial = solicitud?.nif ?: "")

@@ -3,7 +3,7 @@ package com.example.fctc3.viewmodels.viewmodelsfactory
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.fctc3.viewmodels.ProfesorViewModel
+import com.example.fctc3.viewmodels.screens.ProfesorViewModel
 
 class ProfesorViewModelFactory(private val application: Application) : ViewModelProvider.Factory
 {

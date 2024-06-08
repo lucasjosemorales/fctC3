@@ -6,7 +6,7 @@ import com.example.fct.models.Profesor
 @Dao
 interface ProfesorDAO
 {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertarProfesorFirebase(profesor: Profesor)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertarProfesor(profesor: Profesor)

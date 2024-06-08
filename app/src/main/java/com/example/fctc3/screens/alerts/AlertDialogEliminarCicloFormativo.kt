@@ -9,12 +9,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.fctc3.viewmodels.bbdd.CicloViewModel
 
 
 @Composable
 fun AlertDialogEliminarCicloFormativo(showDialog: MutableState<Boolean>)
 {
     var firstInput by remember { mutableStateOf("") }
+
+    val cicloViewModel: CicloViewModel = viewModel()
 
     if (showDialog.value)
     {
@@ -50,6 +54,7 @@ fun AlertDialogEliminarCicloFormativo(showDialog: MutableState<Boolean>)
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                         onClick = {
                             // Confirm action
+                            cicloViewModel.eliminarCiclo(firstInput)
                             showDialog.value = false
                         }
                     ) {

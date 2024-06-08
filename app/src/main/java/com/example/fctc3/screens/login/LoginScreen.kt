@@ -18,11 +18,10 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.example.fctc3.navigation.AppScreens
 import com.example.fctc3.screens.principal.SetStatusBarColor
 import com.example.fctc3.R
-import com.example.fctc3.viewmodels.AuthViewModel
+import com.example.fctc3.viewmodels.bbdd.AuthViewModel
 
 
 
@@ -118,7 +117,7 @@ fun LoginScreen(navController: NavController)
                 }
 
                 Button(
-                    onClick = { /* Handle Google login logic here */ },
+                    onClick = { navController.navigate(route = AppScreens.ScaffoldScreen.route)},
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp),

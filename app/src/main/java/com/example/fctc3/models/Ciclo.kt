@@ -1,7 +1,15 @@
 package com.example.fctc3.models
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "ciclos")
 data class Ciclo(
-    var nombreCorto: String = "",
-    var nombreLargo: String = "",
-    var familia: String = ""
+    @PrimaryKey
+    val nombreCorto: String,
+    @ColumnInfo
+    val nombreLargo: String,
+    @ColumnInfo
+    val familia: String
 )

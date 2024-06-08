@@ -1,17 +1,12 @@
-package com.example.fctc3.viewmodels
+package com.example.fctc3.viewmodels.bbdd
 
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fct.models.Profesor
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 class FirestoreViewModel : ViewModel() {
     private val db = FirebaseFirestore.getInstance()

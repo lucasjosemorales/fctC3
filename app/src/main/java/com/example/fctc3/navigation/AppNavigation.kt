@@ -15,7 +15,10 @@ import com.example.fctc3.screens.formularios.FormularioSolicitudScreen
 import com.example.fctc3.screens.login.ForgotScreen
 import com.example.fctc3.screens.login.LoginScreen
 import com.example.fctc3.screens.principal.ScaffoldScreen
-import com.example.fctc3.viewmodels.*
+import com.example.fctc3.viewmodels.screens.AlumnoViewModel
+import com.example.fctc3.viewmodels.screens.EmpresaViewModel
+import com.example.fctc3.viewmodels.screens.ProfesorViewModel
+import com.example.fctc3.viewmodels.screens.SolicitudViewModel
 import androidx.navigation.compose.composable as composable1
 
 

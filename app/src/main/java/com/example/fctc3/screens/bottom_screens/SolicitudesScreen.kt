@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.fctc3.models.Solicitud
 import com.example.fctc3.navigation.AppScreens
-import com.example.fctc3.viewmodels.EmpresaViewModel
-import com.example.fctc3.viewmodels.SolicitudViewModel
+import com.example.fctc3.viewmodels.screens.EmpresaViewModel
+import com.example.fctc3.viewmodels.screens.SolicitudViewModel
 import com.example.fctc3.R
 import kotlinx.coroutines.launch
 import java.util.LinkedHashMap
