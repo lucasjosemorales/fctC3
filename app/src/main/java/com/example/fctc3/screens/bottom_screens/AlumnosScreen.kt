@@ -10,16 +10,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.asFlow
 import androidx.navigation.NavHostController
 import com.example.fctc3.navigation.AppScreens
 import com.example.fctc3.viewmodels.screens.AlumnoViewModel
@@ -28,6 +33,7 @@ import com.example.fctc3.R
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import kotlinx.coroutines.delay
 
 @Composable
 fun SearchBar(modifier: Modifier, onSearch: (String) -> Unit)
@@ -46,12 +52,22 @@ fun SearchBar(modifier: Modifier, onSearch: (String) -> Unit)
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlumnosScreen(navController: NavHostController, viewModel: AlumnoViewModel)
 {
-
+    val state = rememberPullToRefreshState()
     var searchText by remember { mutableStateOf("") }
+    val alumnos by viewModel.alumnos.observeAsState(initial = viewModel.alumnos.value ?: emptyList())
 
+    if (state.isRefreshing) {
+        LaunchedEffect(true) {
+            // fetch something
+            delay(1500)
+            viewModel.añadirAlumnos()
+            state.endRefresh()
+        }
+    }
     Column (
         modifier = Modifier.fillMaxSize()
     )
@@ -64,7 +80,7 @@ fun AlumnosScreen(navController: NavHostController, viewModel: AlumnoViewModel)
             }
         )
 
-        val alumno1 = Alumno(
+        /*val alumno1 = Alumno(
             name = "Juan Pérez",
             email = "juan.perez@alu.murciaeduca.es",
             phoneNumber = "123456789",
@@ -83,22 +99,45 @@ fun AlumnosScreen(navController: NavHostController, viewModel: AlumnoViewModel)
             email = "carlos.martinez@alu.murciaeduca.es",
             phoneNumber = "555666777",
             grupo = "2DAW"
+        )*/
+
+        //val alumnos: List<Alumno> = listOf(alumno1, alumno2, alumno3, alumno1, alumno2, alumno3)
+
+        Column (
+            modifier = Modifier.fillMaxSize().nestedScroll(state.nestedScrollConnection)
         )
+        {
 
-        val alumnos: List<Alumno> = listOf(alumno1, alumno2, alumno3, alumno1, alumno2, alumno3)
-        val filteredItems = remember(searchText) {
-            alumnos.filter { it.name.contains(searchText, ignoreCase = true) || it.grupo.contains(searchText, ignoreCase = true) }}
 
-        LazyColumn {
-            filteredItems.forEach{ alumno ->
-                item {
-                    AlumnoItem(alumno = alumno, navController, viewModel)
+            val filteredItems = remember(searchText) {
+                alumnos.filter {
+                    it.name.contains(searchText, ignoreCase = true) || it.grupo.contains(
+                        searchText,
+                        ignoreCase = true
+                    )
                 }
             }
+
+            LazyColumn {
+                if (!state.isRefreshing) {
+                    filteredItems.forEach { alumno ->
+                        item {
+                            AlumnoItem(alumno = alumno, navController, viewModel)
+                        }
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(72.dp))
+                    }
+                }
+            }
+
+            PullToRefreshContainer(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                state = state
+            )
+
         }
-
-
-
 
     }
 }
@@ -236,6 +275,8 @@ fun AlumnoItem(alumno: Alumno, navController: NavHostController, viewModel: Alum
                 IconButton(
                     onClick = {
                         //Dialog preguntando si estás seguro + Borrado de la BBDD + Actualizar vista de la Lista
+                        viewModel.removeAlumnoByEmail(alumno.email)
+                        viewModel.eliminarAlumno(alumno.email)
                     },
                 ) {
                     Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Icon")

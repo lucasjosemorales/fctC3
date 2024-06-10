@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -34,6 +35,7 @@ import com.example.fctc3.viewmodels.screens.EmpresaViewModel
 import com.example.fctc3.viewmodels.screens.ProfesorViewModel
 import com.example.fctc3.viewmodels.screens.SolicitudViewModel
 import com.example.fct.models.Profesor
+
 
 @Composable
 fun SetStatusBarColor() {
@@ -107,7 +109,7 @@ fun ScaffoldScreen(navController: NavHostController, viewModel: List<ViewModel>)
                         alumnoViewModel.alumno.value = null
 
                         val profesorViewModel: ProfesorViewModel = viewModel[1] as ProfesorViewModel
-                        profesorViewModel.profesor.value = Profesor()
+                        profesorViewModel.profesor.value = null
 
                         val empresaViewModel: EmpresaViewModel = viewModel[2] as EmpresaViewModel
                         empresaViewModel.empresa.value = null
@@ -311,7 +313,6 @@ fun NavigationGraph(navController: NavHostController, inner: PaddingValues, view
 
             composable(AppScreens.AlumnosScreen.route)
             {
-
                 AlumnosScreen(navController, viewModel = alumnoViewModel)
             }
 
@@ -335,7 +336,7 @@ fun NavigationGraph(navController: NavHostController, inner: PaddingValues, view
                 FormularioEmpresaScreen(navController, empresaViewModel.empresa.value)
             }
             composable(route=AppScreens.FormularioProfesorScreen.route){
-                FormularioProfesorScreen(navController, profesorViewModel.profesor.value)
+                FormularioProfesorScreen(navController, profesorViewModel.profesor.value!!)
             }
             composable(route=AppScreens.FormularioSolicitudScreen.route){
                 FormularioSolicitudScreen(navController, solicitudViewModel.solicitud.value)

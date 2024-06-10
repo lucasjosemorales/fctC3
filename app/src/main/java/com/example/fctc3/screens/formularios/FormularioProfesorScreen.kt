@@ -27,13 +27,14 @@ import com.example.fctc3.viewmodels.bbdd.CicloViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormularioProfesorScreen(navController: NavHostController, profesor: Profesor) {
+fun FormularioProfesorScreen(navController: NavHostController, profesor: Profesor)
+{
     val viewModel: ProfesorViewModel = viewModel()
     val cicloViewModel: CicloViewModel = viewModel()
 
     val name: String by viewModel.name.observeAsState(initial = profesor?.name ?: "")
-    val email: String by viewModel.email.observeAsState(initial = profesor?.phoneNumber ?: "")
-    val phoneNumber: String by viewModel.phoneNumber.observeAsState(initial = profesor?.email ?: "")
+    val email: String by viewModel.email.observeAsState(initial = profesor?.email ?: "")
+    val phoneNumber: String by viewModel.phoneNumber.observeAsState(initial = profesor?.phoneNumber ?: "")
     val tutoria: String by viewModel.tutoria.observeAsState(initial = profesor?.tutoria ?: "")
     val admin: Boolean by viewModel.admin.observeAsState(initial = profesor?.admin ?: false)
 
@@ -146,10 +147,13 @@ fun FormularioProfesorScreen(navController: NavHostController, profesor: Profeso
 
         Button(
             onClick = {
-                viewModel.añadirProfesor(
-                    Profesor(email, name, phoneNumber, viewModel.tutoria.value!!, admin)
-                )
-                navController.navigate(AppScreens.AdminScreen.route)
+                val profesorAux = Profesor(email = email, name =  name, phoneNumber = phoneNumber,
+                    tutoria = viewModel.tutoria.value!!, admin = admin)
+                viewModel.añadirProfesor(profesorAux)
+                viewModel.addProfesor(profesorAux)
+                viewModel.añadirProfesores()
+
+                //navController.navigate(AppScreens.ProfesoresScreen.route)
             },
             modifier = Modifier.padding(horizontal = 16.dp),
             shape = RoundedCornerShape(4.dp),
@@ -181,6 +185,7 @@ fun Demo_ExposedDropdownMenuBox(lista: List<Ciclo>, viewModel: ProfesorViewModel
             OutlinedTextField(
                 value = selectedText,
                 onValueChange = {
+                                    viewModel.setTutoria(it)
                                 },
                 readOnly = true,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },

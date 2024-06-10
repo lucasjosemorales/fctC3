@@ -10,7 +10,8 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 
 import com.example.fctc3.navigation.AppNavigation
 import com.example.fctc3.themes.MyAppTheme
-
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)

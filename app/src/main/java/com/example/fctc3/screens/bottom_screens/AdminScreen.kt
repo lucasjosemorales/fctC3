@@ -44,15 +44,17 @@ fun AdminScreen(navController: NavHostController, viewModel: ProfesorViewModel)
 
             if (showDialog.value)
             {
-                when(dialogItem.value)
+                val valor: Int = dialogItem.value
+
+                when(valor)
                 {
-                    0 -> navController.navigate(route = AppScreens.FormularioProfesorScreen.route)
+                    0 -> AlertDialogAñadirProfesor(navController, showDialog)
                     1 -> AlertDialogEliminarProfesor(showDialog, viewModel)
                     2 -> AlertDialogAñadirCicloFormativo(showDialog)
                     3 -> AlertDialogEliminarCicloFormativo(showDialog)
                    /* 4 -> AlertDialogAñadirGrupo(showDialog)
                     5 -> AlertDialogEliminarGrupo(showDialog)*/
-                    else -> navController.navigate(route = AppScreens.FormularioProfesorScreen.route)
+                    else -> {}
                 }
             }
 

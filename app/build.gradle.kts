@@ -61,7 +61,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.activity:activity-compose:1.7.0")
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
-    implementation ("androidx.compose.runtime:runtime-livedata:1.2.1")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
+
+    implementation ("androidx.compose.runtime:runtime-livedata:1.6.7")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -76,6 +78,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx:25.0.0")
     implementation ("com.firebaseui:firebase-ui-auth:7.2.0")
     implementation("com.google.firebase:firebase-auth-ktx:23.0.0")
+    implementation("androidx.appcompat:appcompat:1.7.0")
 
 
     //Room
@@ -84,6 +87,9 @@ dependencies {
     ksp("androidx.room:room-compiler:$roomVersion")
     implementation ("androidx.room:room-ktx:$roomVersion")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2") // Add Coroutine dependency
+
+    //Hilt
+    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0") // Para hiltViewModel en Compose con Navigation
 
 
     testImplementation("junit:junit:4.13.2")

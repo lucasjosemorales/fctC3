@@ -56,7 +56,7 @@ fun AppNavigation()
             FormularioEmpresaScreen(navController, empresaViewModel.empresa.value)
         }
         composable1(route=AppScreens.FormularioProfesorScreen.route){
-            FormularioProfesorScreen(navController, profesorViewModel.profesor.value)
+            FormularioProfesorScreen(navController, profesorViewModel.profesor.value!!)
         }
         composable1(route = "AppScreens.FormularioAlumnoScreen")
         {

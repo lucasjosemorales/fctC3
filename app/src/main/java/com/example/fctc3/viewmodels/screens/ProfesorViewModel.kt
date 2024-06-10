@@ -1,100 +1,115 @@
 package com.example.fctc3.viewmodels.screens
 
+import android.annotation.SuppressLint
 import android.app.Application
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import com.example.fctc3.bbdd.room.AppDatabase
 import com.example.fct.models.Profesor
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+
+
 
 class ProfesorViewModel(application: Application) : AndroidViewModel(application)
 {
     //Firebase
     private val dbFirebase = FirebaseFirestore.getInstance()
 
-    //Room
+    /*Room
     private val db = AppDatabase.getDatabase(application)
-    private val dao = db.profesorDao()
+    private val dao = db.profesorDao()*/
 
-    // LiveData que contiene la lista de profesores
-    private val _profesores = MutableLiveData<List<Profesor>>()
-    val profesores: LiveData<List<Profesor>> = _profesores
+    private val _profesores = MutableStateFlow<List<Profesor>>(emptyList())
+    val profesores = _profesores.asStateFlow().asLiveData()
+
+    fun addProfesor(profesor: Profesor) {
+        _profesores.value = _profesores.value + profesor
+    }
+
+    fun removeProfesorByEmail(email: String)
+    {
+        _profesores.value = _profesores.value.filter { profesor ->
+            profesor.email != email
+        }
+    }
 
     init
     {
         añadirProfesores()
-        cargarProfesores()
     }
 
-    // Carga los profesores desde la base de datos
-    fun cargarProfesores() {
-        viewModelScope.launch {
-            _profesores.value = dao.obtenerTodosLosProfesores()
-        }
-    }
+    /*suspend fun cargarProfesores()
+    {
+        _profesores.value = dao.obtenerTodosLosProfesores()
+    }*/
+
 
     //Añadir un nuevo profesor
     fun añadirProfesor(profesor: Profesor)
     {
-        viewModelScope.launch {
-            //dao.insertarProfesor(profesor)
-            val profesor = Profesor(profesor.email, profesor.name, profesor.phoneNumber, profesor.tutoria, profesor.admin, profesor.activo)
-            dbFirebase.collection("profesores").document(profesor.email).set(profesor)
-        }
+        //dao.insertarProfesor(profesor)
+        val profesor = Profesor(
+                                email = profesor.email,
+                                name = profesor.name,
+                                phoneNumber =  profesor.phoneNumber,
+                                tutoria = profesor.tutoria,
+                                admin = profesor.admin,
+                                activo = profesor.activo)
+
+        dbFirebase.collection("profesores").document(profesor.email).set(profesor)
+        //dao.insertarProfesor(profesor)
 
     }
 
+    @SuppressLint("SuspiciousIndentation")
     fun añadirProfesores()
     {
-        val lista: MutableList<Profesor> = mutableListOf()
-
-        viewModelScope.launch {
-
-            dbFirebase.collection("profesores")
-                .get()
-                .addOnSuccessListener { snapshot ->
+        _profesores.value = listOf()
+        dbFirebase.collection("profesores")
+            .get()
+            .addOnSuccessListener { snapshot ->
                     snapshot.documents.mapNotNull { document ->
 
-                        lista.add(Profesor(
-                                    email = document.get("email") as String,
-                                    name = document.get("name") as String,
-                                    phoneNumber = document.get("phoneNumber") as String,
-                                    tutoria = document.get("tutoria") as String,
-                                    admin = document.get("admin") as Boolean,
-                                    activo = document.get("activo") as Boolean
-                                ))
+                            val aux = Profesor(
+                                email = document.get("email") as String,
+                                name = document.get("name") as String,
+                                phoneNumber = document.get("phoneNumber") as String,
+                                tutoria = document.get("tutoria") as String,
+                                admin = document.get("admin") as Boolean,
+                                activo = document.get("activo") as Boolean
+                            )
 
-                    }
-                    _profesores.value = lista.toList()
+                            addProfesor(aux)
+                            //dao.insertarProfesor(aux)
+                        }
                 }
-                .addOnFailureListener { exception ->
-                    // Handle any errors appropriately
-                }
-        }
-
+            .addOnFailureListener { exception ->
+                // Handle any errors appropriately
+            }
     }
 
     //Eliminar todos
-    fun eliminarTodos()
+    /*fun eliminarTodos()
     {
         viewModelScope.launch {
             dao.eliminarTodos()
         }
-    }
+    }*/
 
     //Eliminar un profesor por su email
     fun eliminarProfesor(email: String)
     {
-        viewModelScope.launch {
-            //dao.eliminarProfesor(email)
-            dbFirebase.collection("profesores").document(email).delete()
-        }
+        dbFirebase.collection("profesores").document(email).delete()
+        //dao.eliminarProfesor(email)
     }
 
     /*-------------- FIN ROOM Y FIREBASE ----------------------------------------*/
 
-    var profesor = mutableStateOf<Profesor>(Profesor())
+    var profesor = mutableStateOf<Profesor?>(Profesor())
 
     private val _name = MutableLiveData<String>()
     val name : LiveData<String> = _name
@@ -152,4 +167,5 @@ class ProfesorViewModel(application: Application) : AndroidViewModel(application
     fun setSelectedText(selectedText: String) {
         _selectedText.value = selectedText
     }
+
 }

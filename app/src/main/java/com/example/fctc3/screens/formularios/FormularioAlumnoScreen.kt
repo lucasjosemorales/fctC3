@@ -119,7 +119,16 @@ fun FormularioAlumnoScreen(navController: NavHostController, alumno: Alumno?)
 
         Button(
             onClick = {
-                navController.navigate(AppScreens.AlumnosScreen.route)
+                val aux = Alumno(
+                    name = name,
+                    email = email,
+                    phoneNumber = phoneNumber,
+                    grupo = grupo
+                )
+                viewModel.addAlumno(aux)
+                viewModel.añadirAlumno(aux)
+                viewModel.añadirAlumnos()
+                //navController.navigate(AppScreens.AlumnosScreen.route)
             },
             modifier = Modifier.padding(horizontal = 16.dp),
             shape = RoundedCornerShape(4.dp),
