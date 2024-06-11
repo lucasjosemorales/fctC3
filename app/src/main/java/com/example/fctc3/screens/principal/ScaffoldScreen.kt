@@ -1,6 +1,8 @@
 package com.example.fctc3.screens.principal
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -10,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -17,7 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -35,7 +40,54 @@ import com.example.fctc3.viewmodels.screens.EmpresaViewModel
 import com.example.fctc3.viewmodels.screens.ProfesorViewModel
 import com.example.fctc3.viewmodels.screens.SolicitudViewModel
 import com.example.fct.models.Profesor
+import com.example.fctc3.R
+import com.example.fctc3.bbdd.Firebase
+import com.example.fctc3.screens.login.LoginScreen
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
+@Composable
+fun BackHandlerWithConfirmation(onConfirmBack: () -> Unit, onDismiss: () -> Unit) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    // Manejar la acción de retroceso
+    BackHandler(enabled = true) {
+        showDialog = true
+    }
+
+    // Si showDialog es verdadero, mostrar el diálogo de confirmación
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                // Esto se llama cuando el usuario toca fuera del diálogo o presiona el botón de retroceso.
+                showDialog = false
+                onDismiss()
+            },
+            title = { Text("Logout") },
+            text = { Text("¿Estás seguro de que quieres salir?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDialog = false
+                        onConfirmBack() // Confirmar y manejar el retroceso como se desee.
+                    }
+                ) {
+                    Text("Confirmar")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        showDialog = false
+                    }
+                ) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
+}
 
 @Composable
 fun SetStatusBarColor() {
@@ -50,9 +102,9 @@ fun SetStatusBarColor() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScaffoldScreen(navController: NavHostController, viewModel: List<ViewModel>)
+fun ScaffoldScreen(navControllerPrincipal: NavHostController, viewModel: List<ViewModel>)
 {
-    //var showDialog by remember { mutableStateOf(false) }
+
     val navController = rememberNavController()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -66,17 +118,24 @@ fun ScaffoldScreen(navController: NavHostController, viewModel: List<ViewModel>)
         (currentRoute != AppScreens.FormularioProfesorScreen.route) &&
                 (currentRoute != AppScreens.FormularioAlumnoScreen.route) &&
                 (currentRoute != AppScreens.FormularioEmpresaScreen.route) &&
-                (currentRoute != AppScreens.FormularioSolicitudScreen.route)
+                (currentRoute != AppScreens.FormularioSolicitudScreen.route) &&
+                (currentRoute != AppScreens.LoginScreen.route) &&
+                (currentRoute != AppScreens.ForgotScreen.route)
     }
 
     val showTopAppBar = remember(currentRoute)
     {
-        (currentRoute == AppScreens.FormularioProfesorScreen.route) ||
-                (currentRoute == AppScreens.FormularioAlumnoScreen.route) ||
-                (currentRoute == AppScreens.FormularioEmpresaScreen.route) ||
-                (currentRoute == AppScreens.FormularioSolicitudScreen.route) ||
-                (currentRoute == AppScreens.SolicitudesScreen.route)
+        (currentRoute != AppScreens.LoginScreen.route)
     }
+
+    BackHandlerWithConfirmation(
+        onConfirmBack = {
+            navControllerPrincipal.popBackStack()
+        },
+        onDismiss = {
+            // Manejo opcional cuando se descarta el diálogo
+        }
+    )
 
     SetStatusBarColor()
 
@@ -85,7 +144,7 @@ fun ScaffoldScreen(navController: NavHostController, viewModel: List<ViewModel>)
         content = { innerPadding -> NavigationGraph(navController, innerPadding, viewModel) },
         topBar = {
                     if (showTopAppBar)
-                        TopAppBar(navController)
+                        TopAppBar(navController, pantalla = currentRoute ?: "")
                  },
         bottomBar = {
                         if (showNavigationContent)
@@ -151,41 +210,45 @@ private fun OnClickFAB(navController: NavHostController)
 }
 
 @Composable
-fun textoTopAppBar()
+fun textoTopAppBar(pantalla: String)
 {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxSize()
     )
     {
-        Text(text = "FCT C3", textAlign = TextAlign.Center)
+        Text(text = pantalla, textAlign = TextAlign.Center)
     }
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopAppBar(navController: NavHostController) {
+private fun TopAppBar(navController: NavHostController, pantalla: String) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    //No se muestra si es una BottomScreen
     val showNavigationIconButton = remember(currentRoute) {
         (currentRoute != AppScreens.AlumnosScreen.route) &&
                 (currentRoute != AppScreens.EmpresasScreen.route) &&
-                (currentRoute != AppScreens.ProfesoresScreen.route)
-                /*&&
-                (currentRoute != AppScreens.SolicitudesScreen.route)*/}
+                (currentRoute != AppScreens.ProfesoresScreen.route) &&
+                (currentRoute != AppScreens.SolicitudesScreen.route) &&
+                (currentRoute != AppScreens.AdminScreen.route)
+    }
 
-    /*val showActions = remember(currentRoute) {
-        (currentRoute != AppScreens.FormularioProfesorScreen.route) &&
-                (currentRoute != AppScreens.FormularioAlumnoScreen.route) &&
-                (currentRoute != AppScreens.FormularioEmpresaScreen.route) &&
-                (currentRoute != AppScreens.FormularioSolicitudScreen.route)
-    }*/
+    //Se muestra solo para las BottomScreens
+    val showActions = remember(currentRoute) {
+        (currentRoute == AppScreens.AlumnosScreen.route) ||
+                (currentRoute == AppScreens.EmpresasScreen.route) ||
+                (currentRoute == AppScreens.ProfesoresScreen.route) ||
+                (currentRoute == AppScreens.SolicitudesScreen.route) ||
+                (currentRoute == AppScreens.AdminScreen.route)
+    }
 
     TopAppBar(
-        title = { textoTopAppBar() },
+        title = { textoTopAppBar(pantalla) },
         modifier = Modifier.height(56.dp),
         navigationIcon = {
             if (showNavigationIconButton)
@@ -195,7 +258,24 @@ private fun TopAppBar(navController: NavHostController) {
                 }
             }
         },
-        colors = appBarColors()
+        colors = appBarColors(),
+        actions = {
+            if (showActions)
+            {
+                IconButton(
+                    onClick = {
+                        //Cerramos sesión en Firebase
+                        val user = FirebaseAuth.getInstance()
+                        user.signOut()
+                        //Nos vamos a la pantalla de Login
+                        navController.navigate(AppScreens.LoginScreen.route)
+                    }
+                )
+                {
+                    Icon(painterResource(R.drawable.logout), contentDescription = "Logout")
+                }
+            }
+        }
     )
 }
 
@@ -207,6 +287,7 @@ fun appBarColors() = TopAppBarDefaults.topAppBarColors(
     actionIconContentColor = Color(0xFF364F59)
 )
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun BottomNavigationContent(navController: NavHostController)
 {
@@ -220,9 +301,21 @@ fun BottomNavigationContent(navController: NavHostController)
 
         val backStackEntry: NavBackStackEntry? by navController.currentBackStackEntryAsState()
         val currentRoute: String? = backStackEntry?.destination?.route
+        val user = FirebaseAuth.getInstance().currentUser
+        val auth = Firebase(LocalContext.current)
+        val scope = rememberCoroutineScope()
+        var admin: Boolean = false
+
+        scope.launch {
+
+            if (user != null) {
+                admin = auth.esAdmin(user.email)
+            }
+
+        }
 
         //Sí es admin
-        if (true)
+        if (admin)
         {
             itemsAdmin.forEach { item: AppScreens ->
                 val isSelected = (item.route == currentRoute)
@@ -292,6 +385,7 @@ fun customNavigationBarItemColors(): NavigationBarItemColors {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavigationGraph(navController: NavHostController, inner: PaddingValues, viewModel: List<ViewModel>)
 {
@@ -310,6 +404,11 @@ fun NavigationGraph(navController: NavHostController, inner: PaddingValues, view
             startDestination = AppScreens.EmpresasScreen.route
         )
         {
+            //LoginScreen
+            composable(AppScreens.LoginScreen.route)
+            {
+                LoginScreen(navController)
+            }
 
             composable(AppScreens.AlumnosScreen.route)
             {

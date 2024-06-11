@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "profesores")
 data class Profesor(
     @PrimaryKey
-    val email: String = "",
+    var email: String = "",
     @ColumnInfo(name = "name")
     val name: String = "",
     @ColumnInfo(name = "phoneNumber")

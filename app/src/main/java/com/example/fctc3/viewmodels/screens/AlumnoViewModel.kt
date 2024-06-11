@@ -38,13 +38,7 @@ class AlumnoViewModel: ViewModel()
         añadirAlumnos()
     }
 
-    /*suspend fun cargarProfesores()
-    {
-        _profesores.value = dao.obtenerTodosLosProfesores()
-    }*/
-
-
-    //Añadir un nuevo profesor
+    //Añadir un nuevo alumno
     fun añadirAlumno(alumno: Alumno)
     {
         //dao.insertarProfesor(profesor)

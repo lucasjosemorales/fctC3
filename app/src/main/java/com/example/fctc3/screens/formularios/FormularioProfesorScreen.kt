@@ -1,5 +1,6 @@
 package com.example.fctc3.screens.formularios
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -11,6 +12,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -18,25 +20,36 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.fc3.viewmodels.AlertDialogViewModel
 import com.example.fctc3.navigation.AppScreens
 import com.example.fctc3.viewmodels.screens.ProfesorViewModel
 import com.example.fct.models.Profesor
 import com.example.fctc3.R
+import com.example.fctc3.bbdd.AuthRes
+import com.example.fctc3.bbdd.Firebase
 import com.example.fctc3.models.Ciclo
+import com.example.fctc3.viewmodels.bbdd.AuthViewModel
 import com.example.fctc3.viewmodels.bbdd.CicloViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormularioProfesorScreen(navController: NavHostController, profesor: Profesor)
 {
+    val alertViewModel: AlertDialogViewModel = viewModel()
+    val loginEnable: Boolean by alertViewModel.loginEnable.observeAsState(initial = false)
+
     val viewModel: ProfesorViewModel = viewModel()
     val cicloViewModel: CicloViewModel = viewModel()
+    val authViewModel: AuthViewModel = viewModel()
 
     val name: String by viewModel.name.observeAsState(initial = profesor?.name ?: "")
     val email: String by viewModel.email.observeAsState(initial = profesor?.email ?: "")
     val phoneNumber: String by viewModel.phoneNumber.observeAsState(initial = profesor?.phoneNumber ?: "")
     val tutoria: String by viewModel.tutoria.observeAsState(initial = profesor?.tutoria ?: "")
     val admin: Boolean by viewModel.admin.observeAsState(initial = profesor?.admin ?: false)
+
+    val context = LocalContext.current
 
     //BBDD
     val ciclos: List<Ciclo> by cicloViewModel.ciclos.observeAsState(initial = emptyList())
@@ -145,21 +158,59 @@ fun FormularioProfesorScreen(navController: NavHostController, profesor: Profeso
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            onClick = {
-                val profesorAux = Profesor(email = email, name =  name, phoneNumber = phoneNumber,
-                    tutoria = viewModel.tutoria.value!!, admin = admin)
-                viewModel.añadirProfesor(profesorAux)
-                viewModel.addProfesor(profesorAux)
-                viewModel.añadirProfesores()
+        Row()
+        {
 
-                //navController.navigate(AppScreens.ProfesoresScreen.route)
-            },
-            modifier = Modifier.padding(horizontal = 16.dp),
-            shape = RoundedCornerShape(4.dp),
-        ) {
-            Text("Guardar")
+            alertViewModel.habilitarAñadirProfesor(email, name, phoneNumber, tutoria)
+
+            val scope = rememberCoroutineScope()
+
+            Button(
+                onClick = {
+                    val profesorAux = Profesor(email = email, name =  name, phoneNumber = phoneNumber,
+                        tutoria = viewModel.tutoria.value!!, admin = admin)
+                    viewModel.añadirProfesor(profesorAux)
+                    viewModel.addProfesor(profesorAux)
+                    viewModel.añadirProfesores()
+
+                    val auth= Firebase(context)
+
+                    scope.launch {
+                        when (val result = auth.createUserWithEmailAndPassword(email, "123456")) {
+
+                            is AuthRes.Success -> {
+
+                                Toast.makeText(
+                                    context,
+                                    "Usuario creado correctamente",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                            }
+
+                            is AuthRes.Error -> {
+
+                                Toast.makeText(
+                                    context,
+                                    "Error al crear el usuario",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                        }
+                        Toast.makeText(context, "Usuario creado correctamente", Toast.LENGTH_LONG).show()
+                    }
+
+                },
+                modifier = Modifier.padding(horizontal = 16.dp),
+                shape = RoundedCornerShape(4.dp),
+                enabled = loginEnable
+            ) {
+                Text("Guardar")
+            }
         }
+
+
     }
 }
 

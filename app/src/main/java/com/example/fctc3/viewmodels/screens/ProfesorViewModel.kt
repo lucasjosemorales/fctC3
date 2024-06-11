@@ -92,13 +92,6 @@ class ProfesorViewModel(application: Application) : AndroidViewModel(application
             }
     }
 
-    //Eliminar todos
-    /*fun eliminarTodos()
-    {
-        viewModelScope.launch {
-            dao.eliminarTodos()
-        }
-    }*/
 
     //Eliminar un profesor por su email
     fun eliminarProfesor(email: String)

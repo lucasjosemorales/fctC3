@@ -32,12 +32,15 @@ import com.example.fctc3.models.Solicitud
 import com.example.fctc3.navigation.AppScreens
 import com.example.fctc3.viewmodels.screens.SolicitudViewModel
 import com.example.fctc3.R
+import com.example.fctc3.models.Ciclo
+import com.example.fctc3.viewmodels.bbdd.CicloViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun FormularioSolicitudScreen(navController: NavController, solicitud: Solicitud?)
 {
     val viewModel: SolicitudViewModel = viewModel()
+    val cicloViewModel: CicloViewModel = viewModel()
 
     val nombreEmpresa by viewModel.nombreEmpresa.observeAsState(initial = solicitud?.empresa ?: "")
     val nif by viewModel.nif.observeAsState(initial = solicitud?.nif ?: "")
@@ -64,12 +67,20 @@ fun FormularioSolicitudScreen(navController: NavController, solicitud: Solicitud
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val scrollState = rememberScrollState()
-    val fpInformatica = listOf(
+    /*val fpInformatica = listOf(
         "Sistemas Microinformáticos y Redes G.M.",
         "Administración de Sistemas Informáticos en Red G.S.",
         "Desarrollo de Aplicaciones Web G.S.",
         "Desarrollo de Aplicaciones Multiplataforma G.S."
-    )
+    )*/
+    val fpCiclos: List<Ciclo> by cicloViewModel.ciclos.observeAsState(initial = emptyList())
+    val fpInformatica: MutableList<String> = mutableListOf()
+
+    for(ciclo in fpCiclos)
+    {
+        fpInformatica.add(ciclo.nombreLargo)
+    }
+
     val fpAdministracion = listOf(
         "Gestión Administrativa G.M.",
         "Administración y Finanzas G.S.",
@@ -146,8 +157,8 @@ fun FormularioSolicitudScreen(navController: NavController, solicitud: Solicitud
             }
             item {
                 ExpandableSection(fpInformatica, "Informática", viewModel, plazas)
-                ExpandableSection(fpAdministracion, "Administración", viewModel, plazas)
-                ExpandableSection(fpComercio, "Comercio", viewModel, plazas)
+                //ExpandableSection(fpAdministracion, "Administración", viewModel, plazas)
+                //ExpandableSection(fpComercio, "Comercio", viewModel, plazas)
             }
             item{
                 Spacer(modifier = Modifier.height(16.dp))

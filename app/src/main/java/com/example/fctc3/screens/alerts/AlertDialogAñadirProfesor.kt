@@ -20,6 +20,7 @@ fun AlertDialogAñadirProfesor(navController: NavHostController, showDialog: Mut
 {
     val viewModel:ProfesorViewModel = viewModel()
 
+
     if (showDialog.value) {
         AlertDialog(
             onDismissRequest = {

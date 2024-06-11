@@ -56,8 +56,9 @@ fun SearchBar(modifier: Modifier, onSearch: (String) -> Unit)
 @Composable
 fun AlumnosScreen(navController: NavHostController, viewModel: AlumnoViewModel)
 {
-    val state = rememberPullToRefreshState()
     var searchText by remember { mutableStateOf("") }
+
+    val state = rememberPullToRefreshState()
     val alumnos by viewModel.alumnos.observeAsState(initial = viewModel.alumnos.value ?: emptyList())
 
     if (state.isRefreshing) {
@@ -68,6 +69,7 @@ fun AlumnosScreen(navController: NavHostController, viewModel: AlumnoViewModel)
             state.endRefresh()
         }
     }
+
     Column (
         modifier = Modifier.fillMaxSize()
     )

@@ -4,14 +4,18 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -20,12 +24,25 @@ import androidx.navigation.NavHostController
 import com.example.fctc3.models.Empresa
 import com.example.fctc3.navigation.AppScreens
 import com.example.fctc3.viewmodels.screens.EmpresaViewModel
+import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmpresasScreen(navController: NavHostController, viewModel: EmpresaViewModel)
 {
+    val state = rememberPullToRefreshState()
     var searchText by remember { mutableStateOf("") }
+    val empresas by viewModel.empresas.observeAsState(initial = viewModel.empresas.value ?: emptyList())
 
+
+    if (state.isRefreshing) {
+        LaunchedEffect(true) {
+            // fetch something
+            delay(1500)
+            viewModel.añadirEmpresas()
+            state.endRefresh()
+        }
+    }
     Column(
         modifier = Modifier.fillMaxSize()
     )
@@ -38,7 +55,7 @@ fun EmpresasScreen(navController: NavHostController, viewModel: EmpresaViewModel
             }
         )
 
-        val empresa1 = Empresa(
+        /*val empresa1 = Empresa(
             nif = "A12345678",
             name = "Soluciones Innovadoras S.L.",
             localidad = "Madrid",
@@ -58,27 +75,40 @@ fun EmpresasScreen(navController: NavHostController, viewModel: EmpresaViewModel
             personaContacto = "Carlos Gómez",
             tfnoContacto = "932765432",
             email = "info@tecnologiasavanzadas.es"
+        )*/
+
+        //val empresas: List<Empresa> = listOf(empresa1, empresa2, empresa1, empresa2)
+
+
+        Column (
+            modifier = Modifier.fillMaxSize().nestedScroll(state.nestedScrollConnection)
         )
-
-        val empresas: List<Empresa> = listOf(empresa1, empresa2, empresa1, empresa2)
-
-        val filteredItems = remember(searchText) {
-            empresas.filter { it.name.contains(searchText, ignoreCase = true)
-                    || it.personaContacto.contains(searchText, ignoreCase = true) }}
+        {
+            val filteredItems = remember(searchText) {
+                empresas.filter { it.name.contains(searchText, ignoreCase = true)
+                        || it.personaContacto.contains(searchText, ignoreCase = true) }}
 
 
-        LazyColumn {
-            filteredItems.forEach{ empresa ->
-                item {
-                    EmpresaItem(empresa = empresa, navController, viewModel)
+            LazyColumn {
+                if (!state.isRefreshing) {
+                    filteredItems.forEach{ empresa ->
+                        item {
+                            EmpresaItem(empresa = empresa, navController, viewModel)
+                        }
+
+                    }
+                    item{
+                        Spacer(modifier =  Modifier.height(72.dp))
+                    }
                 }
+            }
 
-            }
-            item{
-                Spacer(modifier =  Modifier.height(72.dp))
-            }
+            PullToRefreshContainer(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                state = state
+            )
+
         }
-
     }
 }
 
@@ -98,8 +128,8 @@ fun EmpresaItem(empresa: Empresa, navController: NavHostController, viewModel: E
             .padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 0.dp)
             .fillMaxWidth()
             .clickable {
-                        viewModel.empresa.value= empresa
-                        navController.navigate(route = AppScreens.FormularioEmpresaScreen.route)
+                viewModel.empresa.value= empresa
+                navController.navigate(route = AppScreens.FormularioEmpresaScreen.route)
             })
     {
         Row(
@@ -117,20 +147,20 @@ fun EmpresaItem(empresa: Empresa, navController: NavHostController, viewModel: E
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis)
                 Spacer(modifier = Modifier.height(4.dp))
-               /* Text(
-                    text = empresa.tfnoContacto,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 15.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = empresa.email,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 12.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis)
-                Spacer(modifier = Modifier.height(4.dp))*/
+                /* Text(
+                     text = empresa.tfnoContacto,
+                     fontWeight = FontWeight.Medium,
+                     fontSize = 15.sp,
+                     maxLines = 1,
+                     overflow = TextOverflow.Ellipsis)
+                 Spacer(modifier = Modifier.height(4.dp))
+                 Text(
+                     text = empresa.email,
+                     fontWeight = FontWeight.Medium,
+                     fontSize = 12.sp,
+                     maxLines = 1,
+                     overflow = TextOverflow.Ellipsis)
+                 Spacer(modifier = Modifier.height(4.dp))*/
                 Text(
                     text = empresa.personaContacto,
                     fontWeight = FontWeight.Medium,
@@ -152,7 +182,7 @@ fun EmpresaItem(empresa: Empresa, navController: NavHostController, viewModel: E
                         navController.navigate(route = AppScreens.SolicitudesScreen.route)
                     },
                 ) {
-                    Icon(imageVector = Icons.Default.List, contentDescription = "List Icon")
+                    Icon(imageVector = Icons.AutoMirrored.Filled.List, contentDescription = "List Icon")
                 }
 
                 IconButton(
@@ -166,6 +196,8 @@ fun EmpresaItem(empresa: Empresa, navController: NavHostController, viewModel: E
                 IconButton(
                     onClick = {
                         //Dialog preguntando si estás seguro + Borrado de la BBDD + Actualizar vista de la Lista
+                        viewModel.removeEmpresaByNif(empresa.nif)
+                        viewModel.eliminarEmpresa(empresa.nif)
                     },
                 ) {
                     Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Icon")

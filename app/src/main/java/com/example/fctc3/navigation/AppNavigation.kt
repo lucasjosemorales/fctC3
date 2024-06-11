@@ -35,7 +35,6 @@ fun AppNavigation()
 
     val navController = rememberNavController()
 
-
     NavHost(navController=navController, startDestination=AppScreens.LoginScreen.route)
     {
         //Login

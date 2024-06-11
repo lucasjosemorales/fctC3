@@ -208,6 +208,7 @@ fun SolicitudItem(solicitud: Solicitud, navController: NavHostController, viewMo
 
                 IconButton(
                     onClick = {
+
                     },
                 ) {
                     Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Icon")

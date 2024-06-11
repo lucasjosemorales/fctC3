@@ -49,7 +49,7 @@ fun AdminScreen(navController: NavHostController, viewModel: ProfesorViewModel)
                 when(valor)
                 {
                     0 -> AlertDialogAñadirProfesor(navController, showDialog)
-                    1 -> AlertDialogEliminarProfesor(showDialog, viewModel)
+                    1 -> AlertDialogEliminarProfesor(showDialog)
                     2 -> AlertDialogAñadirCicloFormativo(showDialog)
                     3 -> AlertDialogEliminarCicloFormativo(showDialog)
                    /* 4 -> AlertDialogAñadirGrupo(showDialog)

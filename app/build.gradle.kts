@@ -79,6 +79,7 @@ dependencies {
     implementation ("com.firebaseui:firebase-ui-auth:7.2.0")
     implementation("com.google.firebase:firebase-auth-ktx:23.0.0")
     implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("androidx.constraintlayout:constraintlayout-compose-android:1.1.0-alpha13")
 
 
     //Room
@@ -90,6 +91,11 @@ dependencies {
 
     //Hilt
     implementation ("androidx.hilt:hilt-navigation-compose:1.0.0") // Para hiltViewModel en Compose con Navigation
+
+    //Icons Visibility
+    //Icons
+    implementation("androidx.compose.material:material-icons-extended:1.6.7")
+    implementation ("androidx.test.espresso:espresso-core:3.5.1")
 
 
     testImplementation("junit:junit:4.13.2")
