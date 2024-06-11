@@ -1,9 +1,12 @@
 package com.example.fctc3.bbdd
 
+import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import com.example.fctc3.screens.bottom_screens.ProfesorItem
 import com.example.fct.models.Alumno
@@ -15,10 +18,13 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 sealed class AuthRes<out T> {
     data class Success<T>(val data: T) : AuthRes<T>()
@@ -116,24 +122,27 @@ class Firebase (private val context: Context){
     //------------------------FUNCIONES PROFESORES FIREBASE-------------------------------------------
     private val firestore = FirebaseFirestore.getInstance()
 
+    @SuppressLint("CoroutineCreationDuringComposition")
     suspend fun esAdmin(email: String?): Boolean
     {
-        val docRef = firestore.collection("profesores").document(email!!)
-        var admin:Boolean = false
+        var admin: Boolean = false
+        val docRef = db.collection("profesores").document(email!!)
 
         docRef
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
                     admin = document.getBoolean("admin") as Boolean
-                    Toast.makeText(context, "Admin1: ${admin}", Toast.LENGTH_LONG).show()
+                    //Toast.makeText(context, "Admin1: ${admin}", Toast.LENGTH_LONG).show()
                 } else {
                     // El documento no fue encontrado
                 }
             }.await()
 
-        Toast.makeText(context, "Admin2: ${admin}", Toast.LENGTH_LONG).show()
+        //Toast.makeText(context, "Admin2: ${admin}", Toast.LENGTH_LONG).show()
         return admin
+
+
     }
 
     fun getProfesoresFlow(): Flow<List<Profesor>> = callbackFlow {

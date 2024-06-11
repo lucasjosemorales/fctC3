@@ -9,6 +9,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,6 +30,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.fc3.viewmodels.LoginViewModel
 import com.example.fctc3.navigation.*
 import com.example.fctc3.screens.bottom_screens.*
 import com.example.fctc3.screens.formularios.FormularioAlumnoScreen
@@ -45,7 +47,9 @@ import com.example.fctc3.bbdd.Firebase
 import com.example.fctc3.screens.login.LoginScreen
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun BackHandlerWithConfirmation(onConfirmBack: () -> Unit, onDismiss: () -> Unit) {
@@ -144,7 +148,8 @@ fun ScaffoldScreen(navControllerPrincipal: NavHostController, viewModel: List<Vi
         content = { innerPadding -> NavigationGraph(navController, innerPadding, viewModel) },
         topBar = {
                     if (showTopAppBar)
-                        TopAppBar(navController, pantalla = currentRoute ?: "")
+                        TopAppBar(navController = navController, pantalla = currentRoute ?: "",
+                            navControllerPrincipal = navControllerPrincipal)
                  },
         bottomBar = {
                         if (showNavigationContent)
@@ -224,7 +229,7 @@ fun textoTopAppBar(pantalla: String)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopAppBar(navController: NavHostController, pantalla: String) {
+private fun TopAppBar(navController: NavHostController, pantalla: String, navControllerPrincipal: NavHostController) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -268,7 +273,7 @@ private fun TopAppBar(navController: NavHostController, pantalla: String) {
                         val user = FirebaseAuth.getInstance()
                         user.signOut()
                         //Nos vamos a la pantalla de Login
-                        navController.navigate(AppScreens.LoginScreen.route)
+                        navControllerPrincipal.navigate(AppScreens.LoginScreen.route)
                     }
                 )
                 {
@@ -303,19 +308,60 @@ fun BottomNavigationContent(navController: NavHostController)
         val currentRoute: String? = backStackEntry?.destination?.route
         val user = FirebaseAuth.getInstance().currentUser
         val auth = Firebase(LocalContext.current)
-        val scope = rememberCoroutineScope()
-        var admin: Boolean = false
 
-        scope.launch {
+        val loginViewModel: LoginViewModel = viewModel()
+        val isAdmin by loginViewModel.isAdmin.observeAsState(initial = false)
 
-            if (user != null) {
-                admin = auth.esAdmin(user.email)
-            }
-
+        if (user != null) {
+            loginViewModel.checkIfUserIsAdmin(user.email!!)
         }
 
-        //Sí es admin
-        if (admin)
+        when (isAdmin) {
+            null -> CircularProgressIndicator()  // Mostrar barra de progreso mientras carga
+            true ->
+                itemsAdmin.forEach { item: AppScreens ->
+                val isSelected = (item.route == currentRoute)
+                NavigationBarItem(
+                    selected = (currentRoute == item.route),
+                    icon = ({ Icon(painter = painterResource(if (isSelected) item.selectedIcon else item.icon), contentDescription = null) }),
+                    label = { Text(text = item.title) },
+                    onClick = {
+                        navController.navigate(item.route){
+                            // Aquí puedes agregar lógicas de navegación como limpiar el backstack o evitar múltiples copias
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    colors = customNavigationBarItemColors()
+                )
+            }
+            false ->
+                items.forEach { item: AppScreens ->
+                    val isSelected = (item.route == currentRoute)
+                    NavigationBarItem(
+                        selected = (currentRoute == item.route),
+                        icon = ({ Icon(painter = painterResource(if (isSelected) item.selectedIcon else item.icon), contentDescription = null) }),
+                        label = { Text(text = item.title) },
+                        onClick = {
+                            navController.navigate(item.route){
+                                // Aquí puedes agregar lógicas de navegación como limpiar el backstack o evitar múltiples copias
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                        colors = customNavigationBarItemColors()
+                    )
+                }
+        }
+
+        /*Sí es admin
+        if (isAdmin!!)
         {
             itemsAdmin.forEach { item: AppScreens ->
                 val isSelected = (item.route == currentRoute)
@@ -359,7 +405,7 @@ fun BottomNavigationContent(navController: NavHostController)
                     colors = customNavigationBarItemColors()
                 )
             }
-        }
+        }*/
 
 
     }
