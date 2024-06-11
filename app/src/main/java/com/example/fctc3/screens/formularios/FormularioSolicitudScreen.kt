@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,7 +36,6 @@ import com.example.fctc3.R
 import com.example.fctc3.models.Ciclo
 import com.example.fctc3.viewmodels.bbdd.CicloViewModel
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun FormularioSolicitudScreen(navController: NavController, solicitud: Solicitud?)
 {
@@ -57,13 +57,6 @@ fun FormularioSolicitudScreen(navController: NavController, solicitud: Solicitud
     //Email
     val alumnos by viewModel.alumnos.observeAsState(initial = solicitud?.alumnos ?: "")
 
-    /*var localidad by remember { mutableStateOf("") }
-    var personaContacto by remember { mutableStateOf("") }
-    var telefonoContacto by remember { mutableStateOf("") }
-    var correoElectronico by remember { mutableStateOf("") }
-    var funciones by remember { mutableStateOf("") }
-    var horarioLaboral by remember { mutableStateOf("") }
-    var observaciones by remember { mutableStateOf("") }*/
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val scrollState = rememberScrollState()
@@ -92,6 +85,11 @@ fun FormularioSolicitudScreen(navController: NavController, solicitud: Solicitud
         "Comercio Internacional Bilingüe G.S.",
         "Marketing y Publicidad G.S.",
     )
+
+    /* FIREBASE */
+    val loginEnable: Boolean by viewModel.loginEnable.observeAsState(initial = false)
+    val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier.background(color = Color.White)
@@ -184,14 +182,36 @@ fun FormularioSolicitudScreen(navController: NavController, solicitud: Solicitud
                 Spacer(modifier = Modifier.height(16.dp))
 
             }
+
+            //Comprobamos todos los campos y habilitamos el boton
+            viewModel.habilitarBoton(nif,nombreEmpresa,funciones,horario)
+
             item{
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = {
+                        //Añadir solicitud
+                        val aux = Solicitud(
+                            nif = nif,
+                            convocatoria = "Marzo",
+                            curso = "2023-2024",
+                            empresa = nombreEmpresa,
+                            funciones = funciones,
+                            horario = horario,
+                            plazas = plazas,
+                            estado = "Nueva",
+                            coordinador = coordinador,
+                            //alumnos = alumnos
+                        )
+                        viewModel.addSolicitud(aux)
+                        viewModel.añadirSolicitud(aux)
+                        viewModel.añadirSolicitudes()
+
                         navController.navigate(route = AppScreens.EmpresasScreen.route)
                     },
                     modifier = Modifier.padding(horizontal = 16.dp),
                     shape = RoundedCornerShape(4.dp),
+                    enabled = loginEnable
                 ) {
                     Text("Guardar")
                 }
@@ -206,7 +226,7 @@ fun FormularioSolicitudScreen(navController: NavController, solicitud: Solicitud
 
 
 @Composable
-fun ListaDeCursosFormulario(ciclo: String, viewModel: SolicitudViewModel, plazas:MutableMap<String, Int>)
+fun ListaDeCursosFormulario(ciclo: String, viewModel: SolicitudViewModel, plazas:MutableMap<String, Long>)
 {
     Row(
         modifier = Modifier
@@ -215,7 +235,7 @@ fun ListaDeCursosFormulario(ciclo: String, viewModel: SolicitudViewModel, plazas
         verticalAlignment = Alignment.CenterVertically
     )
     {
-        Stepper(value = plazas[ciclo] ?: 0 , onValueChange = { viewModel.updateConfiguracion(ciclo, it) })
+        Stepper(value = plazas[ciclo] ?: 0L , onValueChange = { plazas.set(ciclo, it) })
         Spacer(modifier = Modifier.width(16.dp))
         Text(ciclo, style = MaterialTheme.typography.bodyLarge)
     }
@@ -223,19 +243,21 @@ fun ListaDeCursosFormulario(ciclo: String, viewModel: SolicitudViewModel, plazas
 
 @Composable
 fun Stepper(
-    value: Int,
-    onValueChange: (Int) -> Unit,
-    minValue: Int = Int.MIN_VALUE,
-    maxValue: Int = Int.MAX_VALUE
+    value: Long,
+    onValueChange: (Long) -> Unit,
+    minValue: Long = 0L,
+    maxValue: Long = 10L
 ) {
 
-    var counter by rememberSaveable{ mutableIntStateOf(value) }
+    var counter by rememberSaveable{ mutableLongStateOf(value) }
+
+    onValueChange(counter)
 
     Row{
 
         Button(
-            onClick = { if (counter > 0) counter -=1 },
-            enabled = value > minValue,
+            onClick = { if (counter > minValue) counter -=1 },
+            enabled = value >= minValue,
             shape = RectangleShape,
             modifier = Modifier.graphicsLayer(scaleX = 0.7f, scaleY = 0.7f)
         ) {
@@ -248,7 +270,7 @@ fun Stepper(
             fontSize = 24.sp)
         Spacer(Modifier.width(4.dp))
         Button(
-            onClick = { counter += 1 },
+            onClick = { if (counter < maxValue) counter += 1 },
             enabled = value < maxValue,
             shape = RectangleShape,
             modifier = Modifier.graphicsLayer(scaleX = 0.7f, scaleY = 0.7f)
@@ -262,7 +284,7 @@ fun Stepper(
 }
 
 @Composable
-fun ExpandableSection(ciclos:List<String>, fp: String, viewModel: SolicitudViewModel, plazas:MutableMap<String, Int>) {
+fun ExpandableSection(ciclos:List<String>, fp: String, viewModel: SolicitudViewModel, plazas:MutableMap<String, Long>) {
     val (expanded, setExpanded) = remember { mutableStateOf(false) }
     val image1: Painter = painterResource(id = R.drawable.expand_more)
     val image2: Painter = painterResource(id = R.drawable.expand_less)

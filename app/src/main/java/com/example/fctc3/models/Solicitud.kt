@@ -10,7 +10,7 @@ data class Solicitud(
     val empresa: String = "",
     val funciones: String = "",
     val horario: String = "",
-    val plazas: MutableMap<String, Int> = mutableMapOf(),
+    val plazas: MutableMap<String, Long> = mutableMapOf(),
     val estado: String = "Nueva",
     //Email
     val coordinador: String? = "",

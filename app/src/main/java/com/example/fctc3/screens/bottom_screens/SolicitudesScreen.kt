@@ -9,39 +9,140 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.fctc3.models.Solicitud
 import com.example.fctc3.navigation.AppScreens
 import com.example.fctc3.viewmodels.screens.EmpresaViewModel
 import com.example.fctc3.viewmodels.screens.SolicitudViewModel
 import com.example.fctc3.R
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.LinkedHashMap
 
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun SolicitudesScreen(navController: NavHostController, viewModel: EmpresaViewModel, viewModelSolicitudes: SolicitudViewModel)
+fun SolicitudesScreen(navController: NavHostController, viewModelEmpresa: EmpresaViewModel, viewModel: SolicitudViewModel)
 //fun SolicitudesScreen(navController: NavHostController, empresa: Empresa?)
 {
 
-    var nifComparar by remember { mutableStateOf(viewModel.empresa.value?.nif ?: "") }
+    //val viewModel: SolicitudViewModel = viewModel()
+    //var nifComparar by remember { mutableStateOf(viewModel.empresa.value?.nif ?: "") }
+
 
     Column (
         modifier = Modifier.fillMaxSize()
     )
     {
 
+        val state = rememberPullToRefreshState()
+        var searchText by remember { mutableStateOf("") }
+        val solicitudes by viewModel.solicitudes.observeAsState(initial = viewModel.solicitudes.value ?: emptyList())
+        val nifCompare by viewModel.nif.observeAsState(initial = viewModel.nif.value ?: "")
+
+        if (state.isRefreshing) {
+            LaunchedEffect(true) {
+                // fetch something
+                delay(1500)
+                viewModel.añadirSolicitudes()
+                state.endRefresh()
+            }
+        }
+        Column (
+            modifier = Modifier.fillMaxSize()
+        )
+        {
+            SearchBar(
+                modifier = Modifier.fillMaxWidth().padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 0.dp),
+                onSearch = { newText ->
+                    searchText = newText
+                }
+            )
+
+            /*val solicitud1 = Solicitud(
+                nif= "A12345678",
+                empresa = "Soluciones Innovadoras S.L.",
+                funciones= "Programación App Web",
+                horario= "L-V 8-14",
+                plazas= LinkedHashMap<String, Int>(),
+                estado = "Nueva",
+                coordinador = "juan.perez@escuela.edu",
+                alumnos = null
+            )
+
+            solicitud1.plazas["Sistemas Microinformáticos y Redes G.M."] = 2
+
+            val solicitud2 = Solicitud(
+                nif= "B87654321",
+                empresa = "Tecnologías Avanzadas S.A.",
+                funciones= "Programación App Móvil",
+                horario= "L-V 8-15",
+                plazas=LinkedHashMap<String, Int>(),
+                estado="Nueva",
+                coordinador = "juan.perez@escuela.edu",
+                alumnos = null
+            )
+
+            solicitud2.plazas["Desarrollo de Aplicaciones Multiplataforma G.S."] = 1*/
+
+            //val solicitudes: List<Solicitud> = listOf(solicitud1, solicitud2)
+
+            Column (
+                modifier = Modifier.fillMaxSize().nestedScroll(state.nestedScrollConnection)
+            )
+            {
+                if (nifCompare.isNullOrEmpty()){
+                    val filteredItems = remember(searchText) {
+                        solicitudes.filter {it.empresa.contains(searchText, ignoreCase = true)
+                                || it.funciones.contains(searchText, ignoreCase = true)}}
+
+                    LazyColumn {
+                        if (!state.isRefreshing) {
+                            filteredItems.forEach{ solicitud ->
+                                item {
+                                    SolicitudItem( solicitud= solicitud, navController, viewModel)
+                                }
+                            }
+                        }
+                    }
+                } else{
+                    val filteredNifItems = remember(nifCompare) {
+                        solicitudes.filter { it.nif.equals(nifCompare, ignoreCase = true)}}
+
+                    LazyColumn {
+                        if (!state.isRefreshing) {
+                            filteredNifItems.forEach{ solicitud ->
+                                item {
+                                    SolicitudItem( solicitud= solicitud, navController, viewModel)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                PullToRefreshContainer(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    state = state
+                )
+            }
+
+        }
+        /*
         val tabs = listOf("Nuevas", "Asignadas", "Completadas")
         val pagerState = rememberPagerState(pageCount = {
             3
@@ -78,7 +179,7 @@ fun SolicitudesScreen(navController: NavHostController, viewModel: EmpresaViewMo
                     }
                 }
             )
-        }
+        }*/
     }
 }
 
@@ -208,7 +309,8 @@ fun SolicitudItem(solicitud: Solicitud, navController: NavHostController, viewMo
 
                 IconButton(
                     onClick = {
-
+                        viewModel.removeSolicitudByNif(solicitud.nif)
+                        viewModel.eliminarSolicitud(solicitud.nif)
                     },
                 ) {
                     Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Icon")
@@ -218,13 +320,25 @@ fun SolicitudItem(solicitud: Solicitud, navController: NavHostController, viewMo
     }
 }
 
+/*
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TabContent1(navController: NavHostController, nifCompare: String?, viewModel: SolicitudViewModel)
 {
 
+    val state = rememberPullToRefreshState()
     var searchText by remember { mutableStateOf("") }
+    val solicitudes by viewModel.solicitudes.observeAsState(initial = viewModel.solicitudes.value ?: emptyList())
 
-
+    if (state.isRefreshing) {
+        LaunchedEffect(true) {
+            // fetch something
+            delay(1500)
+            viewModel.añadirSolicitudes()
+            state.endRefresh()
+        }
+    }
     Column (
         modifier = Modifier.fillMaxSize()
     )
@@ -236,7 +350,7 @@ fun TabContent1(navController: NavHostController, nifCompare: String?, viewModel
             }
         )
 
-        val solicitud1 = Solicitud(
+        /*val solicitud1 = Solicitud(
             nif= "A12345678",
             empresa = "Soluciones Innovadoras S.L.",
             funciones= "Programación App Web",
@@ -260,45 +374,69 @@ fun TabContent1(navController: NavHostController, nifCompare: String?, viewModel
             alumnos = null
         )
 
-        solicitud2.plazas["Desarrollo de Aplicaciones Multiplataforma G.S."] = 1
+        solicitud2.plazas["Desarrollo de Aplicaciones Multiplataforma G.S."] = 1*/
 
-        val solicitudes: List<Solicitud> = listOf(solicitud1, solicitud2)
+        //val solicitudes: List<Solicitud> = listOf(solicitud1, solicitud2)
 
-        if (nifCompare.isNullOrEmpty()){
-            val filteredItems = remember(searchText) {
-                solicitudes.filter {it.empresa.contains(searchText, ignoreCase = true)
-                        || it.funciones.contains(searchText, ignoreCase = true)}}
+        Column (
+            modifier = Modifier.fillMaxSize().nestedScroll(state.nestedScrollConnection)
+        )
+        {
+            if (nifCompare.isNullOrEmpty()){
+                val filteredItems = remember(searchText) {
+                    solicitudes.filter {it.empresa.contains(searchText, ignoreCase = true)
+                            || it.funciones.contains(searchText, ignoreCase = true)}}
 
-            LazyColumn {
-                filteredItems.forEach{ solicitud ->
-                    item {
-                        SolicitudItem( solicitud= solicitud, navController, viewModel)
+                LazyColumn {
+                    if (!state.isRefreshing) {
+                        filteredItems.forEach{ solicitud ->
+                            item {
+                                SolicitudItem( solicitud= solicitud, navController, viewModel)
+                            }
+                        }
+                    }
+                }
+            } else{
+                val filteredNifItems = remember(nifCompare) {
+                    solicitudes.filter { it.nif.equals(nifCompare, ignoreCase = true)}}
+
+                LazyColumn {
+                    if (!state.isRefreshing) {
+                        filteredNifItems.forEach{ solicitud ->
+                            item {
+                                SolicitudItem( solicitud= solicitud, navController, viewModel)
+                            }
+                        }
                     }
                 }
             }
-        } else{
-            val filteredNifItems = remember(nifCompare) {
-                solicitudes.filter { it.nif.equals(nifCompare, ignoreCase = true)}}
 
-            LazyColumn {
-                filteredNifItems.forEach{ solicitud ->
-                    item {
-                        SolicitudItem( solicitud= solicitud, navController, viewModel)
-                    }
-                }
-            }
+            PullToRefreshContainer(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                state = state
+            )
         }
+
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TabContent2(navController: NavHostController, nifCompare: String, viewModel: SolicitudViewModel)
 {
 
-
+    val state = rememberPullToRefreshState()
     var searchText by remember { mutableStateOf("") }
+    val solicitudes by viewModel.solicitudes.observeAsState(initial = viewModel.solicitudes.value ?: emptyList())
 
-
+    if (state.isRefreshing) {
+        LaunchedEffect(true) {
+            // fetch something
+            delay(1500)
+            viewModel.añadirSolicitudes()
+            state.endRefresh()
+        }
+    }
     Column (
         modifier = Modifier.fillMaxSize()
     )
@@ -310,7 +448,7 @@ fun TabContent2(navController: NavHostController, nifCompare: String, viewModel:
             }
         )
 
-        val solicitud1 = Solicitud(
+        /*val solicitud1 = Solicitud(
             nif= "A12345678",
             empresa = "Soluciones Innovadoras S.L.",
             funciones= "Programación App Web",
@@ -334,43 +472,70 @@ fun TabContent2(navController: NavHostController, nifCompare: String, viewModel:
             alumnos = null
         )
 
-        solicitud2.plazas["Desarrollo de Aplicaciones Multiplataforma G.S."] = 1
+        solicitud2.plazas["Desarrollo de Aplicaciones Multiplataforma G.S."] = 1*/
 
-        val solicitudes: List<Solicitud> = listOf(solicitud1, solicitud2)
+        //val solicitudes: List<Solicitud> = listOf(solicitud1, solicitud2)
 
-        if (nifCompare.isNullOrEmpty()){
-            val filteredItems = remember(searchText) {
-                solicitudes.filter {it.empresa.contains(searchText, ignoreCase = true)
-                        || it.funciones.contains(searchText, ignoreCase = true)}}
+        Column (
+            modifier = Modifier.fillMaxSize().nestedScroll(state.nestedScrollConnection)
+        )
+        {
+            if (nifCompare.isNullOrEmpty()){
+                val filteredItems = remember(searchText) {
+                    solicitudes.filter {it.empresa.contains(searchText, ignoreCase = true)
+                            || it.funciones.contains(searchText, ignoreCase = true)}}
 
-            LazyColumn {
-                filteredItems.forEach{ solicitud ->
-                    item {
-                        SolicitudItem( solicitud= solicitud, navController, viewModel)
+                LazyColumn {
+                    if (!state.isRefreshing) {
+                        filteredItems.forEach{ solicitud ->
+                            item {
+                                SolicitudItem( solicitud= solicitud, navController, viewModel)
+                            }
+                        }
+                    }
+                }
+            } else{
+                val filteredNifItems = remember(nifCompare) {
+                    solicitudes.filter { it.nif.equals(nifCompare, ignoreCase = true)}}
+
+                LazyColumn {
+                    if (!state.isRefreshing) {
+                        filteredNifItems.forEach{ solicitud ->
+                            item {
+                                SolicitudItem( solicitud= solicitud, navController, viewModel)
+                            }
+                        }
                     }
                 }
             }
-        } else{
-            val filteredNifItems = remember(nifCompare) {
-                solicitudes.filter { it.nif.equals(nifCompare, ignoreCase = true)}}
 
-            LazyColumn {
-                filteredNifItems.forEach{ solicitud ->
-                    item {
-                        SolicitudItem( solicitud= solicitud, navController, viewModel)
-                    }
-                }
-            }
+            PullToRefreshContainer(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                state = state
+            )
         }
+
     }
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TabContent3(navController: NavHostController, nifCompare: String, viewModel: SolicitudViewModel)
 {
-    var searchText by remember { mutableStateOf("") }
 
+    val state = rememberPullToRefreshState()
+    var searchText by remember { mutableStateOf("") }
+    val solicitudes by viewModel.solicitudes.observeAsState(initial = viewModel.solicitudes.value ?: emptyList())
+
+    if (state.isRefreshing) {
+        LaunchedEffect(true) {
+            // fetch something
+            delay(1500)
+            viewModel.añadirSolicitudes()
+            state.endRefresh()
+        }
+    }
     Column (
         modifier = Modifier.fillMaxSize()
     )
@@ -382,7 +547,7 @@ fun TabContent3(navController: NavHostController, nifCompare: String, viewModel:
             }
         )
 
-        val solicitud1 = Solicitud(
+        /*val solicitud1 = Solicitud(
             nif= "A12345678",
             empresa = "Soluciones Innovadoras S.L.",
             funciones= "Programación App Web",
@@ -406,33 +571,48 @@ fun TabContent3(navController: NavHostController, nifCompare: String, viewModel:
             alumnos = null
         )
 
-        solicitud2.plazas["Desarrollo de Aplicaciones Multiplataforma G.S."] = 1
+        solicitud2.plazas["Desarrollo de Aplicaciones Multiplataforma G.S."] = 1*/
 
+        //val solicitudes: List<Solicitud> = listOf(solicitud1, solicitud2)
 
-        val solicitudes: List<Solicitud> = listOf(solicitud1, solicitud2)
+        Column (
+            modifier = Modifier.fillMaxSize().nestedScroll(state.nestedScrollConnection)
+        )
+        {
+            if (nifCompare.isNullOrEmpty()){
+                val filteredItems = remember(searchText) {
+                    solicitudes.filter {it.empresa.contains(searchText, ignoreCase = true)
+                            || it.funciones.contains(searchText, ignoreCase = true)}}
 
-        if (nifCompare.isNullOrEmpty()){
-            val filteredItems = remember(searchText) {
-                solicitudes.filter {it.empresa.contains(searchText, ignoreCase = true) || it.funciones.contains(searchText, ignoreCase = true)}}
+                LazyColumn {
+                    if (!state.isRefreshing) {
+                        filteredItems.forEach{ solicitud ->
+                            item {
+                                SolicitudItem( solicitud= solicitud, navController, viewModel)
+                            }
+                        }
+                    }
+                }
+            } else{
+                val filteredNifItems = remember(nifCompare) {
+                    solicitudes.filter { it.nif.equals(nifCompare, ignoreCase = true)}}
 
-            LazyColumn {
-                filteredItems.forEach{ solicitud ->
-                    item {
-                        SolicitudItem( solicitud= solicitud, navController, viewModel)
+                LazyColumn {
+                    if (!state.isRefreshing) {
+                        filteredNifItems.forEach{ solicitud ->
+                            item {
+                                SolicitudItem( solicitud= solicitud, navController, viewModel)
+                            }
+                        }
                     }
                 }
             }
-        } else{
-            val filteredNifItems = remember(nifCompare) {
-                solicitudes.filter { it.nif.equals(nifCompare, ignoreCase = true)}}
 
-            LazyColumn {
-                filteredNifItems.forEach{ solicitud ->
-                    item {
-                        SolicitudItem( solicitud= solicitud, navController, viewModel)
-                    }
-                }
-            }
+            PullToRefreshContainer(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                state = state
+            )
         }
+
     }
-}
+}*/
