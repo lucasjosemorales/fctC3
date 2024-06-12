@@ -13,7 +13,8 @@ data class Solicitud(
     val plazas: MutableMap<String, Long> = mutableMapOf(),
     val estado: String = "Nueva",
     //Email
-    val coordinador: String? = "",
+    val coordinador: String = "",
     //Email
-    val alumnos: MutableList<String>? = mutableListOf()
+    val alumnos: MutableList<String> = mutableListOf(),
+    val checked: Boolean
 )

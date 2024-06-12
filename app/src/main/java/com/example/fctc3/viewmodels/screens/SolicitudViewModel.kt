@@ -46,7 +46,8 @@ class SolicitudViewModel (private val state: SavedStateHandle) : ViewModel()
             plazas = solicitud.plazas,
             estado = solicitud.estado,
             coordinador = solicitud.coordinador,
-            alumnos = solicitud.alumnos
+            alumnos = solicitud.alumnos,
+            checked = solicitud.checked
         )
 
         dbFirebase.collection("solicitudes").document(solicitud.nif).set(solicitud)
@@ -71,8 +72,9 @@ class SolicitudViewModel (private val state: SavedStateHandle) : ViewModel()
                         plazas = document.get("plazas") as MutableMap<String,Long>,
                         estado = document.get("estado") as String,
                         coordinador = document.get("coordinador") as String,
-                        alumnos = document.get("alumnos") as MutableList<String>
-                        //alumnos = document.get("alumnos")
+                        alumnos = document.get("alumnos") as MutableList<String>,
+                        checked = document.get("checked") as Boolean
+
                     )
 
                     addSolicitud(aux)
@@ -156,6 +158,8 @@ class SolicitudViewModel (private val state: SavedStateHandle) : ViewModel()
         _estado.value = estado
     }
 
+    /* COORDINADOR */
+
     private val _coordinador = MutableLiveData<String>()
     val coordinador : LiveData<String> = _coordinador
 
@@ -163,11 +167,20 @@ class SolicitudViewModel (private val state: SavedStateHandle) : ViewModel()
         _coordinador.value = coordinador
     }
 
-    //Lista de alumnos
-    private val _alumnos = MutableLiveData<MutableList<String>?>()
-    val alumnos : LiveData<MutableList<String>?> = _alumnos
+    private val _checked = MutableLiveData<Boolean>()
+    val checked: LiveData<Boolean> = _checked
 
-    fun setAlumnos(alumnos: MutableList<String>?){
+    fun setChecked(checked: Boolean) {
+        _checked.value = checked
+    }
+
+    //-------------------------------------------
+
+    //Lista de alumnos
+    private val _alumnos = MutableLiveData<MutableList<String>>()
+    val alumnos : LiveData<MutableList<String>> = _alumnos
+
+    fun setAlumnos(alumnos: MutableList<String>){
         _alumnos.value = alumnos
     }
 
@@ -188,5 +201,20 @@ class SolicitudViewModel (private val state: SavedStateHandle) : ViewModel()
     fun campoVacio(campo: String): Boolean = campo.isNotEmpty()
 
     fun isValidCif(nif: String): Boolean = Regex("^[A-Za-z][0-9]{8}\$").matches(nif)
+
+    /* ALUMNOS */
+    fun añadirAlumnoLista(firstInput: String) {
+        _alumnos.value?.add(firstInput)
+    }
+
+    fun eliminarAlumnoLista(firstInput: String) {
+        _alumnos.value?.remove(firstInput)
+    }
+
+    fun listarAlumnos(): MutableList<String>? {
+        _alumnos.value?.add("Alumno1")
+        _alumnos.value?.add("Alumno2")
+        return _alumnos.value
+    }
 
 }

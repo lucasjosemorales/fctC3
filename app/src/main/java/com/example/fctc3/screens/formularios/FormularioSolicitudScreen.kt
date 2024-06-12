@@ -183,6 +183,30 @@ fun FormularioSolicitudScreen(navController: NavController, solicitud: Solicitud
 
             }
 
+            item{
+                Text(
+                    "Alumnos",
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+
+                Spacer(Modifier.height(16.dp))
+
+
+                Column {
+                    if(solicitud?.alumnos?.isEmpty()!!){
+                        Text("No hay alumnos")
+                    }else{
+                        solicitud.alumnos.forEach{ alumno ->
+                            Text(alumno)
+                        }
+                    }
+                }
+            }
+
             //Comprobamos todos los campos y habilitamos el boton
             viewModel.habilitarBoton(nif,nombreEmpresa,funciones,horario)
 
@@ -201,7 +225,7 @@ fun FormularioSolicitudScreen(navController: NavController, solicitud: Solicitud
                             plazas = plazas,
                             estado = "Nueva",
                             coordinador = coordinador,
-                            //alumnos = alumnos
+                            checked = (!coordinador.isNullOrBlank())
                         )
                         viewModel.addSolicitud(aux)
                         viewModel.añadirSolicitud(aux)
